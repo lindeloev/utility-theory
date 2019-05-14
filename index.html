@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Utility Theory for Dummies</title>
+
+<script src="index_files/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="index_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="index_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="index_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="index_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="index_files/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="index_files/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="index_files/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="index_files/navigation-1.1/tabsets.js"></script>
+<link href="index_files/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="index_files/highlightjs-9.12.0/highlight.js"></script>
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@jonaslindeloev">
+<meta name="twitter:title" content="Utility Theory for Dummies">
+<meta name="twitter:image" content="https://lindeloev.github.io/utility-theory/utility_ptsd.png">
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-1026978-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  
+  gtag('config', 'UA-1026978-2');
+</script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Utility Theory for Dummies</h1>
+
+</div>
+
+
+<p><link rel="stylesheet" type="text/css" href="include/style.css"></p>
+<!-- From https://stackoverflow.com/a/37839683/1297830 -->
+<link rel="stylesheet" type="text/css" href="include/hideOutput.css">
+<script src="include/hideOutput.js"></script>
+<p>By Jonas Kristoffer Lindeløv (<a href="https://lindeloev.net">blog</a>, <a href="https://vbn.aau.dk/da/persons/117060">profile</a>).<br /> Last updated: 14 May, 2019 (See <a href="https://github.com/lindeloev/utility-theory/commits/master">changelog</a>).</p>
+<!-- Social sharing. From simplesharebuttons.com -->
+<style type="text/css">
+  #share-buttons img {
+    width: 40px;
+    padding-right: 15px;
+    border: 0;
+    box-shadow: 0;
+    display: inline;
+    vertical-align: top;
+  }
+</style>
+<div id="share-buttons">
+<!-- Twitter -->
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<p><a href="https://twitter.com/intent/tweet?text=Utility%20Theory%20For%20Dummies%20https%3A%2F%2Flindeloev.github.io%2Futility-theory%20via%20%40jonaslindeloev" class="twitter-hashtag-button" data-size="large" data-related="jonaslindeloev" data-show-count="false">Share on Twitter</a>    <!-- Facebook --><a href="http://www.facebook.com/sharer.php?u=https://lindeloev.github.io/utility-theory/" target="_blank"><img src="https://simplesharebuttons.com/images/somacro/facebook.png" alt="Facebook" /></a><!-- LinkedIn --><a href="http://www.linkedin.com/shareArticle?mini=true&amp;url=https://lindeloev.github.io/utility-theory/" target="_blank"><img src="https://simplesharebuttons.com/images/somacro/linkedin.png" alt="LinkedIn" /></a><!-- Digg --><a href="http://www.digg.com/submit?url=https://lindeloev.github.io/utility-theory/" target="_blank"><img src="https://simplesharebuttons.com/images/somacro/diggit.png" alt="Digg" /></a><!-- Reddit --><a href="http://reddit.com/submit?url=https://lindeloev.github.io/utility-theory/&amp;title=Utility Theory for Dummies" target="_blank"><img src="https://simplesharebuttons.com/images/somacro/reddit.png" alt="Reddit" /></a><!-- Email --><a href="mailto:?Subject=Common statistical tests are linear models (or: how to teach stats)&amp;Body=https://lindeloev.github.io/utility-theory/"><img src="https://simplesharebuttons.com/images/somacro/email.png" alt="Email" /></a></p>
+</div>
+<p><br /></p>
+<!--
+TO DO NOW:
+ * DONE: Rewrite intro.
+ * DONE: Update chocolate example and move it down.
+ * DONE: Write up example 1
+ * DONE: Mention "posterior predictive distribution" instead of "prediction intervals"
+ * DONE: Add example where we merge priors from different sources.
+ * DONE: Add Bayesian priors to the problem 2.2
+ * NO: Loss function on 2.2?
+ * DONE: Write up the sessions*method + mo(symptoms) model. Justify priors?
+ 
+ * Add code folding here and there
+ * Add plot from pt package
+
+Here's a description of the above code which should make sense to you at the end of this tutorial: To maximize *expected utility*, apply a *loss function* to the *posterior predictive distribution* for each combination of *predictors* and choose (*decide!*) the combination which *minimizes loss*, i.e., *maximizes utility*. 
+
+-->
+<p>How do you use data to make optimal decisions? A popular answer is <a href="https://saylordotorg.github.io/text_risk-management-for-enterprises-and-individuals/s07-01-utility-theory.html">utility theory</a> and the aim of the present document is to show that it can be dead-easy!</p>
+<p>Here’s a sneak peek at the full code for the first example we’ll go through. Three simple steps in six lines of code, and you have an optimal decision:</p>
+<pre class="r"><code># Step 1: infer predictors (classical regression)
+fit_gut = brm(previous_earnings ~ gut_feeling, D)
+
+# Step 2: cost function on predictions from fit
+predicted_utility = function(gut_feeling) {
+  earn_pred = predict(fit_gut, data.frame(gut_feeling=gut_feeling))
+  utils_pred = ifelse(earn_pred &lt; 1500, earn_pred, earn_pred*0.9 - 18500*0.1)
+  utils_pred
+}
+
+# Step 3: choose the gut_feeling which maximizes Expected Utility
+optim(1000, function(x) -mean(predicted_utility(x)))</code></pre>
+<p>The exact model and layout will vary from problem to problem, but the general three-step approach stays the same. It scales all the way to Generalized Linear Mixed Models (GLMM) and beyond. I start by presenting a <a href="#ex1_tax">minimal example on tax evasion</a>, followed by a slightly more extended example on choosing the <a href="#ex2_ptsd">optimal treatment plan for a particular PTSD patient</a>.</p>
+<p>To set up the required packages, see the <a href="#setup">Getting Started</a> section. If you feel like it, I’ve written a <a href="#theory">very simple middle-school-level mathematical intro to these concepts</a>. See also other excellent tutorials <a href="http://www.statsathome.com/2017/10/12/bayesian-decision-theory-made-ridiculously-simple/">here</a> and <a href="https://nbviewer.jupyter.org/github/CamDavidsonPilon/Probabilistic-Programming-and-Bayesian-Methods-for-Hackers/blob/master/Chapter5_LossFunctions/Ch5_LossFunctions_PyMC2.ipynb">here</a>.</p>
+Setup:
+<div class="fold s">
+<pre class="r"><code>set.seed(42)
+
+library(brms)
+library(tidyverse)
+library(openxlsx)</code></pre>
+</div>
+<div id="ex1_tax" class="section level1">
+<h1><span class="header-section-number">1</span> Simple example: Evading taxes!</h1>
+<p>The tax year is almost over and a new customer asks if you can do a quick job before the end of the year. Your gut feeling is that this is a $1,100 job, but you’re unsure how accurate this is. You have recorded your initial gut feelings and the actual corresponding earnings for other jobs this year (see below). The thing is, you’ve already earned $18,500 this year and if you earn more than $20,000 you have to pay a 10% tax on <em>all of</em> your income. I.e., there’s a large <em>cost</em> or <em>negative utility</em> of at least $2.000 if this job turns out to yield above $1,500.</p>
+<pre class="r"><code>D = data.frame(
+  previous_earnings = c(2000, 4000, 800, 4000, 700, 400, 3100, 1800, 1700), 
+  gut_feeling = c(1600, 3700, 600, 3600, 600, 300, 3300, 1600, 1400))
+D</code></pre>
+<pre><code>##   previous_earnings gut_feeling
+## 1              2000        1600
+## 2              4000        3700
+## 3               800         600
+## 4              4000        3600
+## 5               700         600
+## 6               400         300
+## 7              3100        3300
+## 8              1800        1600
+## 9              1700        1400</code></pre>
+<p>We will solve this problem using the magical three steps:</p>
+<ol style="list-style-type: decimal">
+<li>Infer how <code>gut_feeling</code> predicts <code>earnings</code>.</li>
+<li>Predict <code>earnings</code> when <code>gut_feeling = 1100</code> and apply a utility function to it (taxes).</li>
+<li>Decide whether to take the job.</li>
+</ol>
+<div id="step-1-infer-predictors" class="section level2">
+<h2><span class="header-section-number">1.1</span> Step 1: Infer predictors</h2>
+<p>Let’s do a simple linear regression to model how that gut feeling <em>predicts</em> actual earnings. For now, we use default priors for simplicity.</p>
+<pre class="r"><code>library(brms)
+fit_gut = brm(previous_earnings ~ gut_feeling, D)</code></pre>
+</div>
+<div id="step-2-add-the-utility-of-taking-the-job" class="section level2">
+<h2><span class="header-section-number">1.2</span> Step 2: Add the utility of taking the job</h2>
+<p>We used Bayesian <code>brms::brm</code> above because it has an associated <code>predict</code> function, which gives us the earnings and the associated probability for each hypothetical earning given <code>gut_feeling = 1000</code>. This is called the <em>posterior predictive distribution</em>. You just can’t get that from the frequentistic counterparts.</p>
+<pre class="r"><code>values = predict(fit_gut, data.frame(gut_feeling=1100), summary=FALSE)</code></pre>
+<p><code>values</code> is visualized in the blue histogram below.</p>
+<p>Now you can calculate the <em>utility</em> of taking this job. Remember, when <code>values &lt; 1500</code>, the utility of each dollar is just one dollar (<code>1.0 * values</code>). However, when <code>values &gt; 1500</code> the utility is <code>values * 0.9</code>. In addition, there’s a one-time large <em>negative utility</em> of the tax on all your previous earnings (<code>18500 * 0.1</code>). That is our <em>utility function</em> for each of the hypothetical earnings.</p>
+<pre class="r"><code>utilities = ifelse(values &lt; 1500, values, values * 0.9 - 18500 * 0.1)</code></pre>
+<p>We can visualize <code>utilities</code> vs. <code>values</code>. See how the above-tax-threshold earnings are shifted to the left:</p>
+<div class="fold s">
+<pre class="r"><code># Put it in a data.frame
+D_plot = data.frame(values, utilities)
+
+# Plot it
+ggplot(D_plot) +
+  # Histograms of posterior predictive and 
+  geom_histogram(aes(x=utilities), bins=100, fill=&#39;darkred&#39;) + 
+  geom_histogram(aes(x=values), bins=100, col=&#39;blue&#39;, alpha=0.3) +
+  
+  # Lines for expected value and expected utility
+  geom_vline(aes(xintercept=mean(utilities), color=&#39;Expected Utility&#39;), lwd=3, show.legend=TRUE) + 
+  geom_vline(aes(xintercept=mean(values), color=&#39;Expected Value&#39;), lwd=3) + 
+  geom_vline(aes(xintercept=1100, color=&#39;Gut Feeling&#39;), lwd=3) +
+  
+  # Styling
+  labs(x = &#39;Earnings (value)&#39;, y=&#39;&#39;, title=&#39;Expected value and utility for gut_feeling = $1,100&#39;) +
+  scale_x_continuous(breaks=seq(-5000, 5000, 500)) + 
+  theme_bw(13) + 
+  theme(axis.ticks.y = element_blank(), axis.title.y = element_blank(), axis.text.y = element_blank()) + 
+  
+  # Legend
+  #scale_colour_manual(name=&quot;Means&quot;,values=c(&#39;Expected Value&#39;=&#39;blue&#39;, &#39;Expected Utility&#39; = &#39;red&#39;, &#39;Gut Feeling&#39;=&#39;green&#39;))
+  scale_color_manual(name = &quot;&quot;, values = c(&#39;Expected Value&#39;=&#39;blue&#39;, &#39;Expected Utility&#39; = &#39;red&#39;, &#39;Gut Feeling&#39;=&#39;green&#39;))</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-7-1.png" width="768" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="step-3-decide-whether-to-take-the-job" class="section level2">
+<h2><span class="header-section-number">1.3</span> Step 3: decide whether to take the job</h2>
+<p>To summarise, if you take the job:</p>
+<ul>
+<li>Your gut feeling told you that you would earn $1.100 from this job</li>
+<li>Your gut feeling is an underestimate. <code>predict(fit, data.frame(gut_feeling=1100)</code> show that you should expect on average $1,285.</li>
+<li>When factoring in the risk of crossing the tax threshold and the associated costs (loss), you can expect on average around $896.</li>
+</ul>
+<p>Now you have the raw numbers on the table. You decide whether to take the job.</p>
+</div>
+<div id="step-3-extended-choose-one-of-several-jobs" class="section level2">
+<h2><span class="header-section-number">1.4</span> Step 3 extended: choose one of several jobs</h2>
+<p>A more common situation in decision making is this: you have multiple jobs available, each with it’s own <code>gut_feeling</code>. As a rational decision maker, you should pick the one which gives you the most profit (we sidestep the issue of the amount of work needed to do each job, but that’s easy to implement as we shall see in the next examples).</p>
+<p>We wrap step 2 above (prediction + utility function) in a function called <code>predicted_utility</code> and run it for a range of gut_feelings:</p>
+<pre class="r"><code>predicted_utility = function(gut_feeling) {
+  # Posterior predictive samples (values)
+  values = predict(fit_gut, data.frame(gut_feeling=gut_feeling), summary=FALSE)
+  
+  # Associated utilities. Posterior predictive utilities?
+  utilities = ifelse(values &lt; 1500, values, values * 0.9 - 18500 * 0.1)  # 
+  utilities  # Return it
+}</code></pre>
+<p>To make an informed decision, you would probably start by plotting <code>predicted_utility</code> for the available jobs or for a range of <code>gut_feelings</code> and eye-ball which you are willing to go with. You can see that around $1000 is a local sweet spot:</p>
+<pre class="r"><code># Evaluate this for gut feelings 0, 100, 200, 300, etc.
+D_plot = data.frame(gut_feelings = seq(0, 4000, 100)) %&gt;%
+  rowwise() %&gt;%
+  mutate(utilities = map(gut_feelings, predicted_utility)) %&gt;%  # Nested list
+  unnest()  # To long format
+
+# Visualize a fraction of it to speed up.
+ggplot(sample_frac(D_plot, 0.1), aes(x=gut_feelings, y=utilities)) + 
+  geom_jitter(width=50, height=0, alpha=0.1) +  # Utility-transformed posterior predictive samples
+  stat_summary(geom=&#39;line&#39;, lwd=3, col=&#39;red&#39;)  # Expected utility</code></pre>
+<p><img src="index_files/figure-html/predict_gut-1.png" width="576" style="display: block; margin: auto;" /></p>
+<p>You can see that you should definitely not take the job if your gut feeling is a profit in the range between $1.200 and $3.500 where you would basically work for free. For larger jobs (e.g., $10.000), you would still profit substantially.</p>
+<p>If you want to search for local maxima or minima, you can leverage <code>optim</code> to find it. Give it a reasonable starting value and put a minus sign on the mean of <code>predicted_utility</code> to find a local maximum. Here you earn $972 when <code>gut_feeling = 981</code>.</p>
+<pre class="r"><code>optim(1000, function(x) -mean(predicted_utility(x)))</code></pre>
+<pre><code>## $par
+## [1] 899.4141
+## 
+## $value
+## [1] -978.0735
+## 
+## $counts
+## function gradient 
+##      200       NA 
+## 
+## $convergence
+## [1] 10
+## 
+## $message
+## NULL</code></pre>
+</div>
+</div>
+<div id="ex2_ptsd" class="section level1">
+<h1><span class="header-section-number">2</span> Extending it: choosing optimal therapy type and length</h1>
+<p>This example will stick to the same three-point recipe but extend it to show the versatility of this approach.</p>
+<div id="the-problem-exposure-threapy-for-ptsd" class="section level2">
+<h2><span class="header-section-number">2.1</span> The problem: exposure threapy for PTSD</h2>
+<p>PTSD is an anxiety disorder where patients have excessive fear responses to some particular “stressors”, e.g., social gatherings. <strong>Exposure therapy</strong> is the method exposing patients to “safe” (and gradually increasing) levels of these stressors, thus de-traumatizing them. You can do this in real life (IRL) or in virtual reality environments (VR).</p>
+<p>Say, you’re a practicing psychotherapist and you keep track of treatment outcomes in your practice using an Excel sheet:</p>
+<pre class="r"><code>D = readxl::read_xlsx(&#39;ptsd_data.xlsx&#39;)
+D</code></pre>
+<pre><code>## # A tibble: 22 x 5
+##       id success symptoms method sessions
+##    &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;     &lt;dbl&gt;
+##  1     1       1        2 VR           14
+##  2     2       0        4 IRL           6
+##  3     3       1        5 IRL           9
+##  4     4       1        3 IRL          10
+##  5     5       0        4 VR            5
+##  6     6       0        3 VR            4
+##  7     7       0        5 VR            8
+##  8     8       1        5 VR            8
+##  9     9       1        2 VR            6
+## 10    10       1        4 IRL          12
+## # ... with 12 more rows</code></pre>
+<ul>
+<li><code>success == 0</code> is a treatment failure</li>
+<li><code>symptoms</code> is the number of symptoms fulfilled at baseline (0 to 5 according to DSM). The more, the worse the patient is off.</li>
+<li><code>method == 'vr'</code> is virtual reality-based exposure.</li>
+<li><code>sessions</code> is the number of sessions used to obtain the success/failure (<code>success</code>)</li>
+</ul>
+</div>
+<div id="step-1-infer-predictors-1" class="section level2">
+<h2><span class="header-section-number">2.2</span> Step 1: Infer predictors</h2>
+<p>Here, we find out how therapy characteristics predict <code>success</code>. Since <code>success</code> is binary, we will use a home-made logistic model (see <code>family=bernoulli</code> below). This may be the first time in the world someone runs this exact model and it has no name. But as long as it can generate a <em>posterior predictive distribution</em>, calculating and optimizing utility is possible.</p>
+<pre class="r"><code>model_ptsd = success ~ sessions + sessions:method + mo(symptoms)</code></pre>
+<p>I made chose this exact model to make sure that your intuition will fail you! That’s when we need statistical inference as a decision support. Briefly:</p>
+<ul>
+<li><code>sessions</code>: More sessions increases the chance of success. This will be represent <code>method == face</code>. We know a priori that this effect is positive in general so below we put a <code>normal(mean=1, sd=1)</code> prior on this slope. Remember that the unit is <em>logits</em> which is not easily interpreted in isolation. We could have used a <code>lognormal()</code> prior to constrain it to positive values.</li>
+<li><code>sessions:method</code>: The two treatments have differential effectiveness (increase chance of success per treatment session). We know a priori that VR exposure is slightly more effective than IRL exposure (see e.g. <a href="http://www.web.teaediciones.com/Ejemplos/PSIOUS_Opris%20i%20cols%20(2012)%20VRET%20in%20anxiety%20disorders.%20A%20Quantitative%20Meta-analysis.pdf">Opris et al., 2012</a> or <a href="https://www.sciencedirect.com/science/article/pii/S0272735815000987#bb0295">this</a> or <a href="https://onlinelibrary.wiley.com/doi/abs/10.1002/da.20910">this</a>) so we put a <code>normal(1, 1)</code> prior on this term.</li>
+<li><code>mo(symptoms)</code>: More symptoms likely reduce the chance of success, everything else being equal. This effect is modeled as ordinal (monotonic, <code>mo</code>).</li>
+</ul>
+<p>To put priors on the predictors, let’s first look up their names:</p>
+<pre class="r"><code>library(brms)
+get_prior(model_ptsd, D, family=bernoulli)</code></pre>
+<pre><code>##                 prior     class              coef group resp dpar nlpar
+## 1                             b                                        
+## 2                             b        mosymptoms                      
+## 3                             b          sessions                      
+## 4                             b sessions:methodVR                      
+## 5 student_t(3, 0, 10) Intercept                                        
+## 6                          simo       mosymptoms1                      
+##   bound
+## 1      
+## 2      
+## 3      
+## 4      
+## 5      
+## 6</code></pre>
+<p>Now we define some priors (see <a href="#citosd">a helper function here</a>):</p>
+<pre class="r"><code>priors = c(
+  # Positive treatment effect of IRL
+  set_prior(&#39;normal(1, 1)&#39;, coef=&#39;sessions&#39;),
+  
+  # On top of &quot;sessions&quot;, add an even better treatment effect of VR
+  set_prior(&#39;normal(1, 1)&#39;, coef=&#39;sessions:methodVR&#39;)
+)</code></pre>
+<p>Run the inference on the <code>model</code> and <code>priors</code>:</p>
+<pre class="r"><code>fit_ptsd = brm(model_ptsd, prior=priors, data=D, family=bernoulli)</code></pre>
+<p>Let’s assess that it runs reasonably well:</p>
+<pre class="r"><code>plot(fit_ptsd)  # Good mixing in traceplots and reasonable posteriors?</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-13-1.png" width="576" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># fit_ptsd  # summary; check that rhat ~ 1
+# pp_check(fit_ptsd)  # Posterior predictive checks</code></pre>
+<p>Looks good. As you can see, our data <code>D</code> overcomes the (relatively vague) VR-positive prior and puts slightly more negative mass on VR compared to IRL (<code>b_sessions:methodVR</code>).</p>
+</div>
+<div id="step-2-define-a-utility-function." class="section level2">
+<h2><span class="header-section-number">2.3</span> Step 2: Define a utility function.</h2>
+<p>We have three predictors. Let us try to make a prediction for a patient with three symptoms and 8 sessions of virtual Reality-based exposure:</p>
+<pre class="r"><code>new_patient = data.frame(symptoms=5, method=&#39;VR&#39;, sessions=10)  # Hypothetical patient
+predict(fit_ptsd, newdata=new_patient)  # Predict treatment success</code></pre>
+<pre><code>##      Estimate Est.Error Q2.5 Q97.5
+## [1,]    0.563 0.4960771    0     1</code></pre>
+<p>Around 55% chance of success.</p>
+<p>Now, let’s define some utilities. There is a negative utility (cost) of therapist fees and in the opportunity cost of treatment failures. There is a positive utility of treatment success. We want to engage in therapy if the latter to overcomes the former, and to avoid it if it doesn’t.</p>
+<p>I propose the following costs (in USD):</p>
+<pre class="r"><code>value_session = list(VR=-100, IRL=-150)  # Negative (cost)
+value_outcome = c(success=3000, failure=-1000)  # Positive and negative</code></pre>
+<p>Let’s define a function which returns the utility associated with a set of predictors:</p>
+<pre class="r"><code>predicted_utility = function(sessions, method, symptoms) {
+  # Make the prediction
+  new = data.frame(sessions, method, symptoms)
+  prob_success = predict(fit_ptsd, newdata=new)[1]  # Just get the success rate
+  
+  # (Negative) utility of treatment (cost)
+  value_therapy = value_session[[method]] * sessions  # cost times sessions
+  
+  # Utilities of outcomes (cost and gain)
+  value_success = prob_success * value_outcome[&#39;success&#39;]
+  value_failure = (1-prob_success) * value_outcome[&#39;failure&#39;]
+  
+  # Return utility. Some of these are negative.
+  value_success + value_failure + value_therapy
+}</code></pre>
+<p><font color='gray'> (ASIDE: Many would object that we are comparing apples and oranges here: The therapy cost is monetary and the human value of a treatment success/failure is “soft”. However, for utility theory to work, we need to but everything on the same scale to compare them. This is often called <span class="math inline">\(utils\)</span> and <a href="https://en.wikipedia.org/wiki/Utility#Functions">is a big topic in and of itself</a> in philosophy. However, it is the foundation of much policy in practice around the world. Just look up <a href="https://en.wikipedia.org/wiki/Value_of_life">value of statistical life</a>. Although policy literally puts monetary values on people’s lives, <span class="math inline">\(utils\)</span> should just be though of as relative utilities. Eight utils are double as much as four utils (or at least higher). Whether each util correspond to $10, $56 or the joy of eating an ice cream is arbitrary, as long as the proportions stay the same.) </font></p>
+</div>
+<div id="step-3-make-a-decision" class="section level2">
+<h2><span class="header-section-number">2.4</span> Step 3: Make a decision</h2>
+Visualize the utilities associated with all treatment options (<code>method</code> and <code>sessions</code>) for two patients. One patient with 3 symptoms (solid) and one with 5 symptoms (dashed):
+<div class="fold s">
+<pre class="r"><code># Make data frame with all combinations of predictors
+D_plot = crossing(
+    sessions = 1:21,  # From 1 to 18 treatment sessions
+    method = c(&#39;VR&#39;, &#39;IRL&#39;),
+    symptoms = c(3, 5)
+  ) %&gt;%
+  
+  # Now add the associated utility for each combination
+  rowwise() %&gt;%
+  mutate(utility = predicted_utility(sessions, method, symptoms))
+
+# Plot it
+utility_curves = ggplot(mutate(D_plot, symptoms=as.character(symptoms)),  # make symptoms non-numeric
+       aes(x = sessions, y=utility, color=method, lty=symptoms)) + 
+  geom_line(lwd=2) + 
+  labs(y = &#39;Utility (in USD)&#39;, title=&#39;Utilities for two patients&#39;) +
+
+  # Unneccessary stuff to make it look nicer
+  scale_x_continuous(breaks=1:30) +
+  scale_y_continuous(breaks = seq(-3000, 3000, by=500)) +
+  geom_hline(yintercept=0) +
+  theme_gray(15) + 
+  theme(panel.grid.minor.x = element_blank())</code></pre>
+</div>
+<p>For a three-symptoms patient, you would probably plan for 11 sessions of VR exposure, everything else being equal. For a five-symptom patient, you would plan for 14 sessions of VR exposure. You would definitely avoid combinations where there is a net negative utility (curve is below zero).</p>
+<p>Note that even though IRL exposure is probably more effective (see parameter estimates in <code>fit</code>), this is not outweighted by the increased cost per session! This is particularly evident after 10+ sessions where squeezing out those extra few percent chance of success is simply too expensive using IRL but still worth it for VR. The logistic model has built-in <em>satisficing</em>: no extra utility of overdoing it. As such, I think this is a nice decision support model in this case.</p>
+<p>As always, you can let <code>optim</code> find the best optimum number of sessions for one of these lines. It proposes 13 sessions for a 5-symptoms patient with IRL exposure:</p>
+<pre class="r"><code>optim(12, function(x) -predicted_utility(x, method=&#39;IRL&#39;, symptoms=5))</code></pre>
+<pre><code>## $par
+## [1] 13.50005
+## 
+## $value
+## [1] -648.9918
+## 
+## $counts
+## function gradient 
+##      175       NA 
+## 
+## $convergence
+## [1] 10
+## 
+## $message
+## NULL</code></pre>
+</div>
+<div id="possible-tweaks-and-extensions" class="section level2">
+<h2><span class="header-section-number">2.5</span> Possible tweaks and extensions</h2>
+<ul>
+<li>As you collect more data, just enter it in the Excel-file and re-run the code above.</li>
+<li>You can add more <code>method</code>s (simply enter them in the <code>method</code> column in the Excel file), other predictors, and more interactions (perhaps <code>method:mo(symptoms)</code> if one treatment is better for low-symptom patients).</li>
+<li>It is probably too simplistic to model the outcome as success/failure. You can get the same “logistic” behavior by having a continuous outcome (say, a symptom severity scale) using a <code>family=gaussian</code> or <code>family=poisson</code> model, and make a <em>diminishing returns</em> utility function as well as strongly penalizing deteriorations.</li>
+<li>Incorporate <em>opportunity cost</em> (a negative utility) into the price of a therapy session. The therapist could have spent this time on other patients and the patient could have spent this time and money for other joy-bringing activities.</li>
+</ul>
+</div>
+</div>
+<div id="theory" class="section level1">
+<h1><span class="header-section-number">3</span> Theory: one ice cream or three pieces of chocolate?</h1>
+<p>You have a few spare coins which is just enough to buy one ice cream or three peices of chocolate. The ice cream would make you twice as happy as one piece chocolate, but remember that there are <em>three</em> pieces of chocolate and only <em>one</em> ice cream. Which choice maximizes your happiness?</p>
+<p>If you chose the three peices of chocolate, just applied utility theory!</p>
+<p>Let’s break it down formally to see why three peices of chocolate is better: The <em>values</em> (<span class="math inline">\(EV_{ice} = 1\)</span> and <span class="math inline">\(EV_{chocolate} = 3\)</span>) were multiplied with their corresponding <em>utility</em> (<span class="math inline">\(U_{ice} = 2\)</span> and <span class="math inline">\(U_{chocolate} = 1\)</span>) so you had to choose between two utility values:</p>
+<ol style="list-style-type: decimal">
+<li><span class="math inline">\(EU_{ice} = EV_{ice} \cdot U_{ice} = 1 \cdot 2 = 2\)</span></li>
+<li><span class="math inline">\(EU_{chocolate} = EV_{chocolate} \cdot U_{chocolate} = 3 \cdot 1 = 3\)</span></li>
+</ol>
+<p>… and you picked the largest one. Well done!</p>
+<p>Notice that <em>Utility is arbitrary</em>. It is only the <em>relative</em> utilities that matter. If we set <span class="math inline">\(U_{ice} = 500\)</span> and <span class="math inline">\(U_{chocolate} = 250\)</span> we would have obtained <span class="math inline">\(EU_{ice} = 500\)</span> and <span class="math inline">\(EU_{chocolate} = 750\)</span>, i.e. the same <span class="math inline">\(EU_{chocolate}/EU_{ice} = 3/2\)</span> preference for chocolate over ice cream.</p>
+<div id="adding-probabilities" class="section level2">
+<h2><span class="header-section-number">3.1</span> Adding probabilities</h2>
+<p>We can extend the example a bit to include probabilities. This is where intuition does not easy solve the problem and math begins to be truly valuable.</p>
+<p>Say that you are unsure how maney pieces of chocolate you get for $2 but have to make the decision in advance, while you stand in line. You think that there’s a 20% chance that you get one peice, 30% chance that you get two peices, and 50% chance that you get three peices. Now, on average (<em>expected value (EV)</em>) you expect to get:</p>
+<p><span class="math display">\[
+\begin{aligned}
+EV_{choco} &amp;= \sum_{N=1}^3 N \cdot P(N) \\
+  &amp;= 1 \cdot 0.2 + 2 \cdot 0.3 + 3 \cdot 0.5 \\
+  &amp;= 2.3
+\end{aligned}
+\]</span></p>
+<p>peices of chocolate. So when you multiply by the utility (<code>EU_{choco}=1</code>) and get that the <em>expected utility (EU)</em> is 2.3. You should still take that chocolate for a gain of 0.3 utils over the ice cream! You may be disappointed, but on average it’s the better choice.</p>
+</div>
+<div id="adding-a-proper-utility-function" class="section level2">
+<h2><span class="header-section-number">3.2</span> Adding a proper utility function</h2>
+<p>You suddenly recall that your joy of chocolate decreases as you get more of it. Specifically, you have a <em>utility function</em> (often called a <em>loss function</em>) which says that you get 1 util from the first peice, 0.75 form the second, 0.5 from the third. Let’s calculate the Expected Utility (EU) now:</p>
+<p><span class="math display">\[
+\begin{aligned}
+EU_{choco} &amp;= \sum_{N=1}^3 N \cdot P(N) \cdot U(N) \\
+  &amp;= 1 \cdot 0.2 \cdot 1 + 2 \cdot 0.3 \cdot 0.75 + 3 \cdot 0.5 \cdot 0.5 \\
+  &amp;= 1.4
+\end{aligned}
+\]</span> Ouch, the expected utility is now way below the <span class="math inline">\(EU_{ice} = 2\)</span>. You simply get too little extra happiness from those expected extra peices of chocolate. Choose the ice cream to maximize your happiness (on average)!</p>
+</div>
+<div id="why-we-need-stats-to-do-this" class="section level2">
+<h2><span class="header-section-number">3.3</span> Why we need stats to do this</h2>
+<p>As you begin working with more and more outcomes (number of peices of chocolate), this becomes complex to do by hand. For example, many models use a normal distribution which has infinitely many outcomes (<span class="math inline">\(x\)</span> is continuous), each with it’s own probability and utility. Luckily, it is dead simple to get a computer to do this. We will start with a relatively simple example below.</p>
+</div>
+</div>
+<div id="citosd" class="section level1">
+<h1><span class="header-section-number">4</span> Useful helper: use confidence intervals as prior</h1>
+<p>For a truly cumulative science, we want to add our knowledge to the previous literature to date. However, the literature seldomly conclude with posterior parameters to be used in new experiments. Rather, it usually reports 95% intervals on those parameters. The function below takes an interval and gives you the mean and standard deviation for normally distributed parameters.</p>
+<pre class="r"><code># Calculate mean (mu) and sd (sigma)
+norm_from_ci = function(ci_lower, ci_upper, level=0.95, plot=FALSE) {
+  mu = mean(c(ci_lower, ci_upper))
+  difference = ci_upper - ci_lower
+  sigma = difference / 2 / qnorm(0.5 + 0.5*level)
+  # If not plot, just return the parameters as vector
+  if(!plot) {
+    c(mu, sigma)
+  }
+  else {
+    # Plot it
+    curve(dnorm(x, mu, sigma), 
+      from=mu-4*sigma, 
+      to=mu+4*sigma, 
+      lwd=3, 
+      main=paste(&#39;mean=&#39;, mu, &#39;, sd=&#39;, sigma, sep=&#39;&#39;),
+      yaxt=&#39;n&#39;, ylab=&#39;&#39;, xlab=&#39;&#39;)
+
+# Add guides to the plot
+abline(v=c(ci_lower, ci_upper), lty=2, col=&#39;blue&#39;)
+abline(v=mu + c(-1, 1)*sigma, lty=2, col=&#39;red&#39;)
+legend(&#39;topright&#39;, inset=0.02, legend=c(paste(level*100, &#39;% CI&#39;), &#39;+/- 1 SD&#39;), col=c(&#39;blue&#39;, &#39;red&#39;), lty=2, box.lty=0)
+  }
+}</code></pre>
+<p>We can try it out on a [24, 28] 95% CI:</p>
+<pre class="r"><code>norm_from_ci(24, 48)</code></pre>
+<pre><code>## [1] 36.000000  6.122561</code></pre>
+<p>To visualize:</p>
+<pre class="r"><code>norm_from_ci(24, 48, plot=TRUE)</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-20-1.png" width="576" style="display: block; margin: auto;" /></p>
+</div>
+<div id="setup" class="section level1">
+<h1><span class="header-section-number">5</span> Getting started if you are new to R</h1>
+<p>This tutorial relies on the following packages. If it still doesn’t run out of the box or if you don’t even have <code>R</code> installed yet, see below.</p>
+<pre class="r"><code>install.packages(&#39;tidyverse&#39;)  # For data handling
+install.packages(&#39;brms&#39;)  # For inference
+install.packages(&#39;openxlsx&#39;)  # To read .xlsx into data.frames</code></pre>
+<p>If this is your first time in R, you need to install a few things:</p>
+<ul>
+<li><a href="https://cran.rstudio.com/">Install R</a>. This is a great programming language and ecosystem for statistics.</li>
+<li><a href="https://www.rstudio.com/products/rstudio/download/">Install Rstudio</a>. This is a great editor to write/run R code.</li>
+<li>To run <code>brms</code>, you may need some additional software and settings. Mac usually works out of the box. If it does not, install XCode Developer Tools from Apple Store. Windows users need to <a href="https://cran.r-project.org/bin/windows/Rtools/">install Rtools</a>. On some systems this won’t be enough and you’ll get errors, particular about “gc++”, “c++” or “compilers”. These are often resolved by following through on the <code>rstan</code> installation guides <a href="https://github.com/stan-dev/rstan/wiki/Installing-RStan-on-Windows">for Windows</a> or <a href="https://github.com/stan-dev/rstan/wiki/Installing-RStan-on-Mac-or-Linux">for Mac</a>.</li>
+</ul>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
