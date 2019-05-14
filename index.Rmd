@@ -417,7 +417,7 @@ utility_curves
 
 ```{r, echo=FALSE}
 # For Twitter card
-ggsave('utility_ptsd.png', utility_curves)
+ggsave('utility_ptsd.png', utility_curves, width=8, height=3.5)
 ```
 
 
