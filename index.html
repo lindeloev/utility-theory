@@ -13,7 +13,7 @@
 
 <title>Utility Theory for Dummies</title>
 
-<script src="index_files/jquery-1.11.3/jquery.min.js"></script>
+<script src="index_files/jquery-1.12.4/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="index_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
 <script src="index_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
@@ -25,6 +25,14 @@
 <script src="index_files/navigation-1.1/tabsets.js"></script>
 <link href="index_files/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="index_files/highlightjs-9.12.0/highlight.js"></script>
+<script src="index_files/htmlwidgets-1.3/htmlwidgets.js"></script>
+<link href="index_files/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
+<script src="index_files/datatables-binding-0.6/datatables.js"></script>
+<link href="index_files/dt-core-1.10.16/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="index_files/dt-core-1.10.16/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="index_files/dt-core-1.10.16/js/jquery.dataTables.min.js"></script>
+<link href="index_files/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
+<script src="index_files/crosstalk-1.0.0/js/crosstalk.min.js"></script>
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@jonaslindeloev">
 <meta name="twitter:title" content="Utility Theory for Dummies">
@@ -379,18 +387,9 @@ library(openxlsx)</code></pre>
 <p>The tax year is almost over and a new customer asks if you can do a quick job before the end of the year. Your gut feeling is that this is a $1,100 job, but you’re unsure how accurate this is. You have recorded your initial gut feelings and the actual corresponding earnings for other jobs this year (see below). The thing is, you’ve already earned $18,500 this year and if you earn more than $20,000 you have to pay a 10% tax on <em>all of</em> your income. I.e., there’s a large <em>cost</em> or <em>negative utility</em> of at least $2.000 if this job turns out to yield above $1,500.</p>
 <pre class="r"><code>D = data.frame(
   previous_earnings = c(2000, 4000, 800, 4000, 700, 400, 3100, 1800, 1700), 
-  gut_feeling = c(1600, 3700, 600, 3600, 600, 300, 3300, 1600, 1400))
-D</code></pre>
-<pre><code>##   previous_earnings gut_feeling
-## 1              2000        1600
-## 2              4000        3700
-## 3               800         600
-## 4              4000        3600
-## 5               700         600
-## 6               400         300
-## 7              3100        3300
-## 8              1800        1600
-## 9              1700        1400</code></pre>
+  gut_feeling = c(1600, 3700, 600, 3600, 600, 300, 3300, 1600, 1400))</code></pre>
+<div id="htmlwidget-eaef49d4a484bc22a8b4" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-eaef49d4a484bc22a8b4">{"x":{"filter":"none","data":[[2000,4000,800,4000,700,400,3100,1800,1700],[1600,3700,600,3600,600,300,3300,1600,1400]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>previous_earnings<\/th>\n      <th>gut_feeling<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"searching":false,"lengthChange":false,"ordering":false,"autoWidth":true,"bPaginate":false,"bInfo":false,"paging":false,"columnDefs":[{"className":"dt-right","targets":[0,1]}],"order":[],"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 <p>We will solve this problem using the magical three steps:</p>
 <ol style="list-style-type: decimal">
 <li>Infer how <code>gut_feeling</code> predicts <code>earnings</code>.</li>
@@ -435,7 +434,7 @@ ggplot(D_plot) +
   # Legend
   #scale_colour_manual(name=&quot;Means&quot;,values=c(&#39;Expected Value&#39;=&#39;blue&#39;, &#39;Expected Utility&#39; = &#39;red&#39;, &#39;Gut Feeling&#39;=&#39;green&#39;))
   scale_color_manual(name = &quot;&quot;, values = c(&#39;Expected Value&#39;=&#39;blue&#39;, &#39;Expected Utility&#39; = &#39;red&#39;, &#39;Gut Feeling&#39;=&#39;green&#39;))</code></pre>
-<p><img src="index_files/figure-html/unnamed-chunk-7-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p><img src="index_files/figure-html/unnamed-chunk-8-1.png" width="768" style="display: block; margin: auto;" /></p>
 </div>
 </div>
 <div id="step-3-decide-whether-to-take-the-job" class="section level2">
@@ -499,22 +498,9 @@ ggplot(sample_frac(D_plot, 0.1), aes(x=gut_feelings, y=utilities)) +
 <h2><span class="header-section-number">2.1</span> The problem: exposure threapy for PTSD</h2>
 <p>PTSD is an anxiety disorder where patients have excessive fear responses to some particular “stressors”, e.g., social gatherings. <strong>Exposure therapy</strong> is the method exposing patients to “safe” (and gradually increasing) levels of these stressors, thus de-traumatizing them. You can do this in real life (IRL) or in virtual reality environments (VR).</p>
 <p>Say, you’re a practicing psychotherapist and you keep track of treatment outcomes in your practice using an Excel sheet:</p>
-<pre class="r"><code>D = readxl::read_xlsx(&#39;ptsd_data.xlsx&#39;)
-D</code></pre>
-<pre><code>## # A tibble: 22 x 5
-##       id success symptoms method sessions
-##    &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;     &lt;dbl&gt;
-##  1     1       1        2 VR           14
-##  2     2       0        4 IRL           6
-##  3     3       1        5 IRL           9
-##  4     4       1        3 IRL          10
-##  5     5       0        4 VR            5
-##  6     6       0        3 VR            4
-##  7     7       0        5 VR            8
-##  8     8       1        5 VR            8
-##  9     9       1        2 VR            6
-## 10    10       1        4 IRL          12
-## # ... with 12 more rows</code></pre>
+<pre class="r"><code>D = readxl::read_xlsx(&#39;ptsd_data.xlsx&#39;)</code></pre>
+<div id="htmlwidget-75b8ef4176f0fa1e798f" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-75b8ef4176f0fa1e798f">{"x":{"filter":"none","data":[[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22],[1,0,1,1,0,0,0,1,1,1,1,1,0,0,1,1,1,0,1,0,1,0],[2,4,5,3,4,3,5,5,2,4,2,3,4,4,3,4,5,3,2,2,3,5],["VR","IRL","IRL","IRL","VR","VR","VR","VR","VR","IRL","VR","IRL","IRL","IRL","VR","VR","IRL","VR","VR","IRL","IRL","VR"],[14,6,9,10,5,4,8,8,6,12,8,9,7,10,8,13,12,11,6,5,8,9]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>id<\/th>\n      <th>success<\/th>\n      <th>symptoms<\/th>\n      <th>method<\/th>\n      <th>sessions<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"searching":false,"lengthChange":false,"ordering":false,"autoWidth":true,"bPaginate":true,"bInfo":true,"paging":true,"columnDefs":[{"className":"dt-right","targets":[0,1,2,4]}],"order":[],"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 <ul>
 <li><code>success == 0</code> is a treatment failure</li>
 <li><code>symptoms</code> is the number of symptoms fulfilled at baseline (0 to 5 according to DSM). The more, the worse the patient is off.</li>
@@ -561,7 +547,7 @@ get_prior(model_ptsd, D, family=bernoulli)</code></pre>
 <pre class="r"><code>fit_ptsd = brm(model_ptsd, prior=priors, data=D, family=bernoulli)</code></pre>
 <p>Let’s assess that it runs reasonably well:</p>
 <pre class="r"><code>plot(fit_ptsd)  # Good mixing in traceplots and reasonable posteriors?</code></pre>
-<p><img src="index_files/figure-html/unnamed-chunk-13-1.png" width="576" style="display: block; margin: auto;" /></p>
+<p><img src="index_files/figure-html/unnamed-chunk-15-1.png" width="576" style="display: block; margin: auto;" /></p>
 <pre class="r"><code># fit_ptsd  # summary; check that rhat ~ 1
 # pp_check(fit_ptsd)  # Posterior predictive checks</code></pre>
 <p>Looks good. As you can see, our data <code>D</code> overcomes the (relatively vague) VR-positive prior and puts slightly more negative mass on VR compared to IRL (<code>b_sessions:methodVR</code>).</p>
@@ -622,7 +608,10 @@ utility_curves = ggplot(mutate(D_plot, symptoms=as.character(symptoms)),  # make
   scale_y_continuous(breaks = seq(-3000, 3000, by=500)) +
   geom_hline(yintercept=0) +
   theme_gray(15) + 
-  theme(panel.grid.minor.x = element_blank())</code></pre>
+  theme(panel.grid.minor.x = element_blank())
+
+utility_curves</code></pre>
+<p><img src="index_files/figure-html/predict_ptsd-1.png" width="864" style="display: block; margin: auto;" /></p>
 </div>
 <p>For a three-symptoms patient, you would probably plan for 11 sessions of VR exposure, everything else being equal. For a five-symptom patient, you would plan for 14 sessions of VR exposure. You would definitely avoid combinations where there is a net negative utility (curve is below zero).</p>
 <p>Note that even though IRL exposure is probably more effective (see parameter estimates in <code>fit</code>), this is not outweighted by the increased cost per session! This is particularly evident after 10+ sessions where squeezing out those extra few percent chance of success is simply too expensive using IRL but still worth it for VR. The logistic model has built-in <em>satisficing</em>: no extra utility of overdoing it. As such, I think this is a nice decision support model in this case.</p>
@@ -726,7 +715,7 @@ legend(&#39;topright&#39;, inset=0.02, legend=c(paste(level*100, &#39;% CI&#39;)
 <pre><code>## [1] 36.000000  6.122561</code></pre>
 <p>To visualize:</p>
 <pre class="r"><code>norm_from_ci(24, 48, plot=TRUE)</code></pre>
-<p><img src="index_files/figure-html/unnamed-chunk-20-1.png" width="576" style="display: block; margin: auto;" /></p>
+<p><img src="index_files/figure-html/unnamed-chunk-22-1.png" width="576" style="display: block; margin: auto;" /></p>
 </div>
 <div id="setup" class="section level1">
 <h1><span class="header-section-number">5</span> Getting started if you are new to R</h1>

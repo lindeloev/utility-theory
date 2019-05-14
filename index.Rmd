@@ -61,6 +61,22 @@ headR::add_twitter_card(
   image = "https://lindeloev.github.io/utility-theory/utility_ptsd.png",
   file = "include/twitter_card.html"
 )
+
+# To show tables.
+print_df = function(D, decimals=4, navigate=FALSE) {
+  DT::datatable(mutate_if(D, is.numeric, round, decimals), 
+    rownames = FALSE,
+    options = list(
+      searching=FALSE, 
+      lengthChange=FALSE, 
+      ordering=FALSE, 
+      autoWidth=TRUE, 
+      bPaginate=navigate, 
+      bInfo=navigate, 
+      paging=navigate
+    )
+  )
+}
 ```
 
 <!--
@@ -128,8 +144,11 @@ The tax year is almost over and a new customer asks if you can do a quick job be
 D = data.frame(
   previous_earnings = c(2000, 4000, 800, 4000, 700, 400, 3100, 1800, 1700), 
   gut_feeling = c(1600, 3700, 600, 3600, 600, 300, 3300, 1600, 1400))
-D
 ```
+```{r, echo=FALSE}
+print_df(D)
+```
+
 
 We will solve this problem using the magical three steps:
 
@@ -257,7 +276,10 @@ PTSD is an anxiety disorder where patients have excessive fear responses to some
 Say, you're a practicing psychotherapist and you keep track of treatment outcomes in your practice using an Excel sheet:
 ```{r}
 D = readxl::read_xlsx('ptsd_data.xlsx')
-D
+```
+
+```{r, echo=FALSE}
+print_df(D, navigate = TRUE)
 ```
 
 * `success == 0` is a treatment failure
@@ -386,8 +408,11 @@ utility_curves = ggplot(mutate(D_plot, symptoms=as.character(symptoms)),  # make
   geom_hline(yintercept=0) +
   theme_gray(15) + 
   theme(panel.grid.minor.x = element_blank())
+
+utility_curves
 ```
 </div>
+
 
 
 ```{r, echo=FALSE}
