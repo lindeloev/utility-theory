@@ -522,14 +522,14 @@ ggplot(sample_frac(D_plot, 0.1), aes(x=gut_feelings, y=utilities)) +
   # On top of IRL, add an even better expected treatment effect of VR
   set_prior(&#39;normal(1, 1)&#39;, coef=&#39;sessions:methodVR&#39;)
 )</code></pre>
-<p>Run the inference on the <code>model</code> and <code>priors</code>:</p>
-<pre class="r"><code>fit_ptsd = brm(model_ptsd, prior=priors, data=D, family=bernoulli)</code></pre>
-<p>Let’s assess the fits and that it converges reasonably well:</p>
-<pre class="r"><code>plot(fit_ptsd)  # Good mixing in traceplots and reasonable posteriors?</code></pre>
-<p><img src="index_files/figure-html/unnamed-chunk-15-1.png" width="576" style="display: block; margin: auto;" /></p>
-<pre class="r"><code># fit_ptsd  # summary; check that rhat ~ 1
-# pp_check(fit_ptsd)  # Posterior predictive checks</code></pre>
-<p>Looks good. As you can see, our data <code>D</code> overcomes the (relatively vague) VR-positive prior and puts slightly more negative mass on VR compared to IRL (<code>b_sessions:methodVR</code>).</p>
+<p>Run the inference on the <code>model</code> and <code>priors</code> and check the fits and convergence:</p>
+<pre class="r"><code>fit_ptsd = brm(model_ptsd, prior=priors, data=D, family=bernoulli)
+
+# fit_ptsd  # summary; check that rhat ~ 1
+# pp_check(fit_ptsd)  # Posterior predictive checks
+plot(fit_ptsd)  # Good mixing in traceplots and reasonable posteriors?</code></pre>
+<p><img src="index_files/figure-html/ptsd_brm-1.png" width="576" style="display: block; margin: auto;" /></p>
+<p>The fits look reasonable and the mixing is good. As you can see, our data <code>D</code> overcomes the (relatively vague) VR-positive prior so that the posterior has slightly more mass on negative values of VR compared to IRL (<code>b_sessions:methodVR</code>).</p>
 </div>
 <div id="step-2-define-a-utility-function." class="section level2">
 <h2><span class="header-section-number">2.2</span> Step 2: Define a utility function.</h2>
@@ -694,7 +694,7 @@ legend(&#39;topright&#39;, inset=0.02, legend=c(paste(level*100, &#39;% CI&#39;)
 <pre><code>## [1] 36.000000  6.122561</code></pre>
 <p>To visualize:</p>
 <pre class="r"><code>norm_from_ci(24, 48, plot=TRUE)</code></pre>
-<p><img src="index_files/figure-html/unnamed-chunk-22-1.png" width="576" style="display: block; margin: auto;" /></p>
+<p><img src="index_files/figure-html/unnamed-chunk-21-1.png" width="576" style="display: block; margin: auto;" /></p>
 </div>
 <div id="setup" class="section level1">
 <h1><span class="header-section-number">5</span> Getting started if you are new to R</h1>

@@ -306,19 +306,16 @@ priors = c(
 )
 ```
 
-Run the inference on the `model` and `priors`:
+Run the inference on the `model` and `priors` and check the fits and convergence:
 ```{r ptsd_brm, cache=TRUE, results='hide', message=FALSE, warning=FALSE}
 fit_ptsd = brm(model_ptsd, prior=priors, data=D, family=bernoulli)
-```
 
-Let's assess the fits and that it converges reasonably well:
-```{r}
-plot(fit_ptsd)  # Good mixing in traceplots and reasonable posteriors?
 # fit_ptsd  # summary; check that rhat ~ 1
 # pp_check(fit_ptsd)  # Posterior predictive checks
+plot(fit_ptsd)  # Good mixing in traceplots and reasonable posteriors?
 ```
 
-Looks good. As you can see, our data `D` overcomes the (relatively vague) VR-positive prior and puts slightly more negative mass on VR compared to IRL (`b_sessions:methodVR`).
+The fits look reasonable and the mixing is good. As you can see, our data `D` overcomes the (relatively vague) VR-positive prior so that the posterior has slightly more mass on negative values of VR compared to IRL (`b_sessions:methodVR`).
 
 
 ## Step 2: Define a utility function.
