@@ -79,14 +79,6 @@ print_df = function(D, decimals=4, navigate=FALSE) {
 }
 ```
 
-<!--
-TO DO NOW:
- * Add plot from pt package
-
-Here's a description of the above code which should make sense to you at the end of this tutorial: To maximize *expected utility*, apply a *loss function* to the *posterior predictive distribution* for each combination of *predictors* and choose (*decide!*) the combination which *minimizes loss*, i.e., *maximizes utility*. 
--->
-
-
 How do you use data to make optimal decisions? A popular answer is [utility theory](https://saylordotorg.github.io/text_risk-management-for-enterprises-and-individuals/s07-01-utility-theory.html) and the aim of the present tutorial is to show that it can be dead-easy!
 
 Here's a sneak peek at the full code for the first example we'll go through. Three simple steps in six lines of code, and you have an optimal decision:
@@ -98,7 +90,7 @@ fit_gut = brm(previous_earnings ~ gut_feeling, D)
 # Step 2: cost function on predictions from fit
 predicted_utility = function(gut_feeling) {
   earn_pred = predict(fit_gut, data.frame(gut_feeling=gut_feeling))
-  utils_pred = ifelse(earn_pred < 1500, earn_pred, earn_pred*0.9 - 18500*0.1)
+  utils_pred = ifelse(earn_pred < 1500, yes = earn_pred, no = earn_pred*0.9)
   utils_pred
 }
 
@@ -109,7 +101,15 @@ optim(1000, function(x) -mean(predicted_utility(x)))
 
 The exact model and layout will vary from problem to problem, but the general three-step approach stays the same. It scales all the way to Generalized Linear Mixed Models (GLMM) and beyond. I start by presenting a [minimal example on tax evasion](#ex1_tax), followed by a slightly more extended example on choosing the [optimal treatment plan for a particular PTSD patient](#ex2_ptsd).
 
-To set up the required packages, see the [Getting Started](#setup) section. If you feel like it, I've written a [very simple middle-school-level mathematical intro to these concepts](#theory). See also other excellent tutorials [here](http://www.statsathome.com/2017/10/12/bayesian-decision-theory-made-ridiculously-simple/) and [here](https://nbviewer.jupyter.org/github/CamDavidsonPilon/Probabilistic-Programming-and-Bayesian-Methods-for-Hackers/blob/master/Chapter5_LossFunctions/Ch5_LossFunctions_PyMC2.ipynb).
+The theory is quite simple: to get from classical stats to Utility Theory, just assign *utilities* to the values ($u(x_i)$) instead of reporting them verbatim ($x_i$). That happened in the `ifelse` line above.
+
+<center>
+![](expected_value_utility.png)
+</center>
+
+<br />
+
+To set up the required packages, see the [Getting Started](#setup) section. If you feel like it, I've written a [very simple middle-school-level mathematical intro to these concepts](#theory). See also other excellent tutorials [here](http://www.statsathome.com/2017/10/12/bayesian-decision-theory-made-ridiculously-simple/) and [here](https://nbviewer.jupyter.org/github/CamDavidsonPilon/Probabilistic-Programming-and-Bayesian-Methods-for-Hackers/blob/master/Chapter5_LossFunctions/Ch5_LossFunctions_PyMC2.ipynb). This can be extended to *Prospect Theory* and many others decision making frameworks (see a great overview in [the vignette to the `pt` package](https://mran.microsoft.com/snapshot/2014-09-08_1746/web/packages/pt/vignettes/pt_vignette.pdf)).
 
 
 Setup:
@@ -243,7 +243,7 @@ ggplot(sample_frac(D_plot, 0.1), aes(x=gut_feelings, y=utilities)) +
 You can see that you should definitely not take the job if your gut feeling is a profit in the range between $1.200 and $3.500 where you would basically work for free. For larger jobs (e.g., $10.000), you would still profit substantially.
 
 
-If you want to search for local maxima or minima, you can leverage `optim` to find it. Give it a reasonable starting value and put a minus sign on the mean of `predicted_utility` to find a local maximum. Here you earn $972 when `gut_feeling = 981`.
+If you want to search for local maxima or minima, you can leverage `optim` to find it. Give it a reasonable starting value and put a minus sign on the mean of `predicted_utility` to find a local maximum. Here `$par` is the `gut_feeling` and `$value` is the expexted earnings (`mean(utilities)`).
 
 ```{r optim_gut, cache=TRUE}
 optim(1000, function(x) -mean(predicted_utility(x)))
@@ -258,11 +258,9 @@ optim(1000, function(x) -mean(predicted_utility(x)))
 # Extending it: choosing optimal therapy type and length {#ex2_ptsd}
 This example will stick to the same three-point recipe but extend it to show the versatility of this approach.
 
+As a specific example, say you have to decide on a treatment plan for patients suffering from PTSD. PTSD is an anxiety disorder where patients have excessive fear responses to some particular "stressors", e.g., social gatherings. **Exposure therapy** is the method exposing patients to "safe" (and gradually increasing) levels of these stressors, thus de-traumatizing them. You can do exposure therapy in real life (IRL) or in virtual reality environments (VR).
 
-## The problem: exposure threapy for PTSD
-PTSD is an anxiety disorder where patients have excessive fear responses to some particular "stressors", e.g., social gatherings. **Exposure therapy** is the method exposing patients to "safe" (and gradually increasing) levels of these stressors, thus de-traumatizing them. You can do this in real life (IRL) or in virtual reality environments (VR).
-
-Say, you're a practicing psychotherapist and you keep track of treatment outcomes in your practice using an Excel sheet:
+You have kept track of the outcomes of earlier treatments using an Excel sheet ([Download ptsd_data.xlsx](ptsd_data.xlsx)):
 ```{r}
 D = readxl::read_xlsx('ptsd_data.xlsx')
 ```
@@ -271,23 +269,24 @@ D = readxl::read_xlsx('ptsd_data.xlsx')
 print_df(D, navigate = TRUE)
 ```
 
-* `success == 0` is a treatment failure
+It is coded like this:
+* `success == 0` is a treatment failure.
 * `symptoms` is the number of symptoms fulfilled at baseline (0 to 5 according to DSM). The more, the worse the patient is off.
 * `method == 'vr'` is virtual reality-based exposure.
-* `sessions` is the number of sessions used to obtain the success/failure (`success`)
+* `sessions` is the number of sessions used to obtain the success/failure (`success`).
 
 
 ## Step 1: Infer predictors
-Here, we find out how therapy characteristics predict `success`. Since `success` is binary, we will use a home-made logistic model (see `family=bernoulli` below). This may be the first time in the world someone runs this exact model and it has no name. But as long as it can generate a *posterior predictive distribution*, calculating and optimizing utility is possible.
+Here, we find out how therapy characteristics predict `success`. Since `success` is binary, we will use a logistic model (see `family=bernoulli` below). This may be the first time in the world someone runs this exact model and it has no name. But as long as it can generate a *posterior predictive distribution*, calculating and optimizing utility is possible.
 
 ```{r}
 model_ptsd = success ~ sessions + sessions:method + mo(symptoms)
 ```
 
-I made chose this exact model to make sure that your intuition will fail you! That's when we need statistical inference as a decision support. Briefly:
+I made this model to make sure that your intuition would fail you! That's when we need statistical inference as a decision support. Briefly:
 
- * `sessions`: More sessions increases the chance of success. This will be represent `method == face`. We know a priori that this effect is positive in general so below we put a `normal(mean=1, sd=1)` prior on this slope. Remember that the unit is *logits* which is not easily interpreted in isolation. We could have used a `lognormal()` prior to constrain it to positive values.
- * `sessions:method`: The two treatments have differential effectiveness (increase chance of success per treatment session). We know a priori that VR exposure is slightly more effective than IRL exposure (see e.g. [Opris et al., 2012](http://www.web.teaediciones.com/Ejemplos/PSIOUS_Opris%20i%20cols%20(2012)%20VRET%20in%20anxiety%20disorders.%20A%20Quantitative%20Meta-analysis.pdf) or [this](https://www.sciencedirect.com/science/article/pii/S0272735815000987#bb0295) or [this](https://onlinelibrary.wiley.com/doi/abs/10.1002/da.20910)) so we put a `normal(1, 1)` prior on this term.
+ * `sessions`: how much each session increases the chance of success (a slope). This will be represent `method == 'IRL'`. We know a priori that this effect is positive in general so below we put a `normal(mean=1, sd=1)` prior on this slope. Remember that the unit is *logits* which is not easily interpreted in isolation. We could have used a `lognormal()` prior or set a lower bound at zero (`lb = 0`) to constrain it to positive values.
+ * `sessions:method`: how much each session of `method == 'VR'` increases the chance of success over and beyond `method == 'IRL'`. We know a priori that VR exposure is slightly more effective than IRL exposure (see e.g. [Opris et al., 2012](http://www.web.teaediciones.com/Ejemplos/PSIOUS_Opris%20i%20cols%20(2012)%20VRET%20in%20anxiety%20disorders.%20A%20Quantitative%20Meta-analysis.pdf) or [this](https://www.sciencedirect.com/science/article/pii/S0272735815000987#bb0295) or [this](https://onlinelibrary.wiley.com/doi/abs/10.1002/da.20910)) so we put a `normal(1, 1)` prior on this term.
  * `mo(symptoms)`: More symptoms likely reduce the chance of success, everything else being equal. This effect is modeled as ordinal (monotonic, `mo`).
 
 
@@ -296,13 +295,13 @@ To put priors on the predictors, let's first look up their names:
 get_prior(model_ptsd, D, family=bernoulli)
 ```
 
-Now we define some priors (see [a helper function here](#citosd)):
+Now we set the priors (see [a helper function here](#citosd), though I used a more informal approach here):
 ```{r}
 priors = c(
   # Positive treatment effect of IRL
   set_prior('normal(1, 1)', coef='sessions'),
   
-  # On top of "sessions", add an even better treatment effect of VR
+  # On top of IRL, add an even better expected treatment effect of VR
   set_prior('normal(1, 1)', coef='sessions:methodVR')
 )
 ```
@@ -312,7 +311,7 @@ Run the inference on the `model` and `priors`:
 fit_ptsd = brm(model_ptsd, prior=priors, data=D, family=bernoulli)
 ```
 
-Let's assess that it runs reasonably well:
+Let's assess the fits and that it converges reasonably well:
 ```{r}
 plot(fit_ptsd)  # Good mixing in traceplots and reasonable posteriors?
 # fit_ptsd  # summary; check that rhat ~ 1
@@ -437,9 +436,9 @@ optim(12, function(x) -predicted_utility(x, method='IRL', symptoms=5))
 # Theory: one ice cream or three pieces of chocolate? {#theory}
 You have a few spare coins which is just enough to buy one ice cream or three peices of chocolate. The ice cream would make you twice as happy as one piece chocolate, but remember that there are *three* pieces of chocolate and only *one* ice cream. Which choice maximizes your happiness?
 
-If you chose the three peices of chocolate, just applied utility theory!
+If you chose the three peices of chocolate, just applied utility theory! Hold that intuition while I try to formalize what you probably did:
 
-Let's break it down formally to see why three peices of chocolate is better: The *values* ($EV_{ice} = 1$ and $EV_{chocolate} = 3$) were multiplied with their corresponding *utility* ($U_{ice} = 2$ and $U_{chocolate} = 1$) so you had to choose between two utility values:
+The *values* ($EV_{ice} = 1$ and $EV_{chocolate} = 3$) were multiplied with their corresponding *utility* ($U_{ice} = 2$ and $U_{chocolate} = 1$) so you had to choose between two utility values:
 
 1. $EU_{ice} = EV_{ice} \cdot U_{ice} = 1 \cdot 2 = 2$
 2. $EU_{chocolate} = EV_{chocolate} \cdot U_{chocolate} = 3 \cdot 1 = 3$
@@ -462,7 +461,7 @@ EV_{choco} &= \sum_{N=1}^3 N \cdot P(N) \\
 \end{aligned}
 $$
 
-peices of chocolate. So when you multiply by the utility (`EU_{choco}=1`) and get that the *expected utility (EU)* is 2.3. You should still take that chocolate for a gain of 0.3 utils over the ice cream! You may be disappointed, but on average it's the better choice.
+peices of chocolate. So when you multiply by the utility ($EU_{choco}=1$) and get that the *expected utility (EU)* is 2.3. You should still take that chocolate for a gain of 0.3 utils over the ice cream! You may be disappointed, but on average it's the better choice.
 
 ## Adding a proper utility function
 You suddenly recall that your joy of chocolate decreases as you get more of it. Specifically, you have a *utility function* (often called a *loss function*) which says that you get 1 util from the first peice, 0.75 form the second, 0.5 from the third. Let's calculate the Expected Utility (EU) now:
@@ -475,6 +474,7 @@ EU_{choco} &= \sum_{N=1}^3 N \cdot P(N) \cdot U(N) \\
 \end{aligned}
 $$
 Ouch, the expected utility is now way below the $EU_{ice} = 2$. You simply get too little extra happiness from those expected extra peices of chocolate. Choose the ice cream to maximize your happiness (on average)!
+
 
 ## Why we need stats to do this
 As you begin working with more and more outcomes (number of peices of chocolate), this becomes complex to do by hand. For example, many models use a normal distribution which has infinitely many outcomes ($x$ is continuous), each with it's own probability and utility. Luckily, it is dead simple to get a computer to do this as the examples in this tutorial demonstrate.
