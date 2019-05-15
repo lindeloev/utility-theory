@@ -323,7 +323,7 @@ div.tocify {
 <!-- From https://stackoverflow.com/a/37839683/1297830 -->
 <link rel="stylesheet" type="text/css" href="include/hideOutput.css">
 <script src="include/hideOutput.js"></script>
-<p>By Jonas Kristoffer Lindeløv (<a href="https://lindeloev.net">blog</a>, <a href="https://vbn.aau.dk/da/persons/117060">profile</a>).<br /> Last updated: 14 May, 2019 (See <a href="https://github.com/lindeloev/utility-theory/commits/master">changelog</a>).</p>
+<p>By Jonas Kristoffer Lindeløv (<a href="https://lindeloev.net">blog</a>, <a href="https://vbn.aau.dk/da/persons/117060">profile</a>).<br /> Last updated: 15 May, 2019 (See <a href="https://github.com/lindeloev/utility-theory/commits/master">changelog</a>).</p>
 <!-- Social sharing. From simplesharebuttons.com -->
 <style type="text/css">
   #share-buttons img {
@@ -343,22 +343,11 @@ div.tocify {
 <p><br /></p>
 <!--
 TO DO NOW:
- * DONE: Rewrite intro.
- * DONE: Update chocolate example and move it down.
- * DONE: Write up example 1
- * DONE: Mention "posterior predictive distribution" instead of "prediction intervals"
- * DONE: Add example where we merge priors from different sources.
- * DONE: Add Bayesian priors to the problem 2.2
- * NO: Loss function on 2.2?
- * DONE: Write up the sessions*method + mo(symptoms) model. Justify priors?
- 
- * Add code folding here and there
  * Add plot from pt package
 
 Here's a description of the above code which should make sense to you at the end of this tutorial: To maximize *expected utility*, apply a *loss function* to the *posterior predictive distribution* for each combination of *predictors* and choose (*decide!*) the combination which *minimizes loss*, i.e., *maximizes utility*. 
-
 -->
-<p>How do you use data to make optimal decisions? A popular answer is <a href="https://saylordotorg.github.io/text_risk-management-for-enterprises-and-individuals/s07-01-utility-theory.html">utility theory</a> and the aim of the present document is to show that it can be dead-easy!</p>
+<p>How do you use data to make optimal decisions? A popular answer is <a href="https://saylordotorg.github.io/text_risk-management-for-enterprises-and-individuals/s07-01-utility-theory.html">utility theory</a> and the aim of the present tutorial is to show that it can be dead-easy!</p>
 <p>Here’s a sneak peek at the full code for the first example we’ll go through. Three simple steps in six lines of code, and you have an optimal decision:</p>
 <pre class="r"><code># Step 1: infer predictors (classical regression)
 fit_gut = brm(previous_earnings ~ gut_feeling, D)
@@ -399,8 +388,7 @@ library(openxlsx)</code></pre>
 <div id="step-1-infer-predictors" class="section level2">
 <h2><span class="header-section-number">1.1</span> Step 1: Infer predictors</h2>
 <p>Let’s do a simple linear regression to model how that gut feeling <em>predicts</em> actual earnings. For now, we use default priors for simplicity.</p>
-<pre class="r"><code>library(brms)
-fit_gut = brm(previous_earnings ~ gut_feeling, D)</code></pre>
+<pre class="r"><code>fit_gut = brm(previous_earnings ~ gut_feeling, D)</code></pre>
 </div>
 <div id="step-2-add-the-utility-of-taking-the-job" class="section level2">
 <h2><span class="header-section-number">1.2</span> Step 2: Add the utility of taking the job</h2>
@@ -459,7 +447,7 @@ ggplot(D_plot) +
   utilities = ifelse(values &lt; 1500, values, values * 0.9 - 18500 * 0.1)  # 
   utilities  # Return it
 }</code></pre>
-<p>To make an informed decision, you would probably start by plotting <code>predicted_utility</code> for the available jobs or for a range of <code>gut_feelings</code> and eye-ball which you are willing to go with. You can see that around $1000 is a local sweet spot:</p>
+<p>To make an informed decision, you would probably start by plotting <code>predicted_utility</code> for the available jobs or for a range of <code>gut_feelings</code> and eye-ball which you are willing to go with. You can see that around $1000 is a local sweet spot and that <code>gut_feeling = 1100</code> is still relatively OK:</p>
 <pre class="r"><code># Evaluate this for gut feelings 0, 100, 200, 300, etc.
 D_plot = data.frame(gut_feelings = seq(0, 4000, 100)) %&gt;%
   rowwise() %&gt;%
@@ -469,7 +457,8 @@ D_plot = data.frame(gut_feelings = seq(0, 4000, 100)) %&gt;%
 # Visualize a fraction of it to speed up.
 ggplot(sample_frac(D_plot, 0.1), aes(x=gut_feelings, y=utilities)) + 
   geom_jitter(width=50, height=0, alpha=0.1) +  # Utility-transformed posterior predictive samples
-  stat_summary(geom=&#39;line&#39;, lwd=3, col=&#39;red&#39;)  # Expected utility</code></pre>
+  stat_summary(geom=&#39;line&#39;, lwd=3, col=&#39;red&#39;) +   # Expected utility
+  geom_vline(xintercept=1100, col=&#39;green&#39;, lwd=2)  # Gut feeling (see previous figure)</code></pre>
 <p><img src="index_files/figure-html/predict_gut-1.png" width="576" style="display: block; margin: auto;" /></p>
 <p>You can see that you should definitely not take the job if your gut feeling is a profit in the range between $1.200 and $3.500 where you would basically work for free. For larger jobs (e.g., $10.000), you would still profit substantially.</p>
 <p>If you want to search for local maxima or minima, you can leverage <code>optim</code> to find it. Give it a reasonable starting value and put a minus sign on the mean of <code>predicted_utility</code> to find a local maximum. Here you earn $972 when <code>gut_feeling = 981</code>.</p>
@@ -519,8 +508,7 @@ ggplot(sample_frac(D_plot, 0.1), aes(x=gut_feelings, y=utilities)) +
 <li><code>mo(symptoms)</code>: More symptoms likely reduce the chance of success, everything else being equal. This effect is modeled as ordinal (monotonic, <code>mo</code>).</li>
 </ul>
 <p>To put priors on the predictors, let’s first look up their names:</p>
-<pre class="r"><code>library(brms)
-get_prior(model_ptsd, D, family=bernoulli)</code></pre>
+<pre class="r"><code>get_prior(model_ptsd, D, family=bernoulli)</code></pre>
 <pre><code>##                 prior     class              coef group resp dpar nlpar
 ## 1                             b                                        
 ## 2                             b        mosymptoms                      
@@ -680,7 +668,7 @@ EU_{choco} &amp;= \sum_{N=1}^3 N \cdot P(N) \cdot U(N) \\
 </div>
 <div id="why-we-need-stats-to-do-this" class="section level2">
 <h2><span class="header-section-number">3.3</span> Why we need stats to do this</h2>
-<p>As you begin working with more and more outcomes (number of peices of chocolate), this becomes complex to do by hand. For example, many models use a normal distribution which has infinitely many outcomes (<span class="math inline">\(x\)</span> is continuous), each with it’s own probability and utility. Luckily, it is dead simple to get a computer to do this. We will start with a relatively simple example below.</p>
+<p>As you begin working with more and more outcomes (number of peices of chocolate), this becomes complex to do by hand. For example, many models use a normal distribution which has infinitely many outcomes (<span class="math inline">\(x\)</span> is continuous), each with it’s own probability and utility. Luckily, it is dead simple to get a computer to do this as the examples in this tutorial demonstrate.</p>
 </div>
 </div>
 <div id="citosd" class="section level1">

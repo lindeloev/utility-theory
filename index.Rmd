@@ -81,24 +81,13 @@ print_df = function(D, decimals=4, navigate=FALSE) {
 
 <!--
 TO DO NOW:
- * DONE: Rewrite intro.
- * DONE: Update chocolate example and move it down.
- * DONE: Write up example 1
- * DONE: Mention "posterior predictive distribution" instead of "prediction intervals"
- * DONE: Add example where we merge priors from different sources.
- * DONE: Add Bayesian priors to the problem 2.2
- * NO: Loss function on 2.2?
- * DONE: Write up the sessions*method + mo(symptoms) model. Justify priors?
- 
- * Add code folding here and there
  * Add plot from pt package
 
 Here's a description of the above code which should make sense to you at the end of this tutorial: To maximize *expected utility*, apply a *loss function* to the *posterior predictive distribution* for each combination of *predictors* and choose (*decide!*) the combination which *minimizes loss*, i.e., *maximizes utility*. 
-
 -->
 
 
-How do you use data to make optimal decisions? A popular answer is [utility theory](https://saylordotorg.github.io/text_risk-management-for-enterprises-and-individuals/s07-01-utility-theory.html) and the aim of the present document is to show that it can be dead-easy!
+How do you use data to make optimal decisions? A popular answer is [utility theory](https://saylordotorg.github.io/text_risk-management-for-enterprises-and-individuals/s07-01-utility-theory.html) and the aim of the present tutorial is to show that it can be dead-easy!
 
 Here's a sneak peek at the full code for the first example we'll go through. Three simple steps in six lines of code, and you have an optimal decision:
 
@@ -160,7 +149,6 @@ We will solve this problem using the magical three steps:
 ## Step 1: Infer predictors
 Let's do a simple linear regression to model how that gut feeling *predicts* actual earnings. For now, we use default priors for simplicity.
 ```{r order_brm, cache=TRUE, results='hide', message=FALSE, warning=FALSE}
-library(brms)
 fit_gut = brm(previous_earnings ~ gut_feeling, D)
 ```
 
@@ -235,7 +223,7 @@ predicted_utility = function(gut_feeling) {
 ```
 
 
-To make an informed decision, you would probably start by plotting `predicted_utility` for the available jobs or for a range of `gut_feelings` and eye-ball which you are willing to go with. You can see that around $1000 is a local sweet spot:
+To make an informed decision, you would probably start by plotting `predicted_utility` for the available jobs or for a range of `gut_feelings` and eye-ball which you are willing to go with. You can see that around $1000 is a local sweet spot and that `gut_feeling = 1100` is still relatively OK:
 
 ```{r predict_gut, cache=TRUE}
 # Evaluate this for gut feelings 0, 100, 200, 300, etc.
@@ -247,7 +235,8 @@ D_plot = data.frame(gut_feelings = seq(0, 4000, 100)) %>%
 # Visualize a fraction of it to speed up.
 ggplot(sample_frac(D_plot, 0.1), aes(x=gut_feelings, y=utilities)) + 
   geom_jitter(width=50, height=0, alpha=0.1) +  # Utility-transformed posterior predictive samples
-  stat_summary(geom='line', lwd=3, col='red')  # Expected utility
+  stat_summary(geom='line', lwd=3, col='red') +   # Expected utility
+  geom_vline(xintercept=1100, col='green', lwd=2)  # Gut feeling (see previous figure)
 ```
 
 
@@ -304,7 +293,6 @@ I made chose this exact model to make sure that your intuition will fail you! Th
 
 To put priors on the predictors, let's first look up their names:
 ```{r}
-library(brms)
 get_prior(model_ptsd, D, family=bernoulli)
 ```
 
@@ -489,7 +477,7 @@ $$
 Ouch, the expected utility is now way below the $EU_{ice} = 2$. You simply get too little extra happiness from those expected extra peices of chocolate. Choose the ice cream to maximize your happiness (on average)!
 
 ## Why we need stats to do this
-As you begin working with more and more outcomes (number of peices of chocolate), this becomes complex to do by hand. For example, many models use a normal distribution which has infinitely many outcomes ($x$ is continuous), each with it's own probability and utility. Luckily, it is dead simple to get a computer to do this. We will start with a relatively simple example below.
+As you begin working with more and more outcomes (number of peices of chocolate), this becomes complex to do by hand. For example, many models use a normal distribution which has infinitely many outcomes ($x$ is continuous), each with it's own probability and utility. Luckily, it is dead simple to get a computer to do this as the examples in this tutorial demonstrate.
 
 
 
