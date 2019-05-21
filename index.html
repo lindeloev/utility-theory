@@ -372,7 +372,7 @@ library(openxlsx)</code></pre>
 </div>
 <div id="ex1_tax" class="section level1">
 <h1><span class="header-section-number">1</span> Simple example: Evading taxes!</h1>
-<p>The tax year is almost over and a new customer asks if you can do a quick job before the end of the year. Your gut feeling is that this is a $1,100 job, but you’re unsure how accurate this is. You have recorded your initial gut feelings and the actual corresponding earnings for other jobs this year (see below). The thing is, you’ve already earned $18,500 this year and if you earn more than $20,000 you have to pay a 10% tax on <em>all of</em> your income. I.e., there’s a large <em>cost</em> or <em>negative utility</em> of at least $2.000 if this job turns out to yield above $1,500.</p>
+<p>The tax year is almost over and a new customer asks if you can do a quick job before the end of the year. Your gut feeling is that this is a $1,100 job, but you’re unsure how accurate this is. You have recorded your initial gut feelings and the actual corresponding earnings for other jobs this year (see below). The thing is, you’ve already earned $18,500 this year and if you earn more than $20,000 you have to pay a 10% tax on <em>all of</em> your income. I.e., there’s a large <em>cost</em> or <em>negative utility</em> or <em>loss</em> of at least $2.000 if this job turns out to yield above $1,500.</p>
 <pre class="r"><code>D = data.frame(
   previous_earnings = c(2000, 4000, 800, 4000, 700, 400, 3100, 1800, 1700), 
   gut_feeling = c(1600, 3700, 600, 3600, 600, 300, 3300, 1600, 1400))</code></pre>
@@ -394,7 +394,7 @@ library(openxlsx)</code></pre>
 <p>We used Bayesian <code>brms::brm</code> above because it has an associated <code>predict</code> function, which gives us the earnings and the associated probability for each hypothetical earning given <code>gut_feeling = 1000</code>. This is called the <em>posterior predictive distribution</em>. You just can’t get that from the frequentistic counterparts.</p>
 <pre class="r"><code>values = predict(fit_gut, data.frame(gut_feeling=1100), summary=FALSE)</code></pre>
 <p><code>values</code> is visualized in the blue histogram below.</p>
-<p>Now you can calculate the <em>utility</em> of taking this job. Remember, when <code>values &lt; 1500</code>, the utility of each dollar is just one dollar (<code>values * 1.0</code>). However, when <code>values &gt; 1500</code> the utility is <code>values * 0.9</code>. In addition, there’s a one-time large <em>negative utility</em> of the tax on all your previous earnings (<code>18500 * 0.1</code>). That is our <em>utility function</em> for each of the hypothetical earnings.</p>
+<p>Now you can calculate the <em>utility</em> of taking this job. Remember, when <code>values &lt; 1500</code>, the utility of each dollar is just one dollar (<code>values * 1.0</code>). However, when <code>values &gt; 1500</code> the utility is <code>values * 0.9</code>. In addition, there’s a one-time large <em>negative utility</em> of the tax on all your previous earnings (<code>18500 * 0.1</code>). That is our <em>utility function</em> for each of the hypothetical earnings. (This is frequently called a <em>cost function</em> or a <em>loss function</em>)</p>
 <pre class="r"><code>utilities = ifelse(values &lt; 1500, values, values * 0.9 - 18500 * 0.1)</code></pre>
 <p>We can visualize <code>utilities</code> vs. <code>values</code>. See how the above-tax-threshold earnings are shifted to the left because of the one-time tax:</p>
 <div class="fold s">

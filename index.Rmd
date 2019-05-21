@@ -126,7 +126,7 @@ library(openxlsx)
 
 
 # Simple example: Evading taxes! {#ex1_tax}
-The tax year is almost over and a new customer asks if you can do a quick job before the end of the year. Your gut feeling is that this is a $1,100 job, but you're unsure how accurate this is. You have recorded your initial gut feelings and the actual corresponding earnings for other jobs this year (see below). The thing is, you've already earned $18,500 this year and if you earn more than $20,000 you have to pay a 10% tax on *all of* your income. I.e., there's a large *cost* or *negative utility* of at least $2.000 if this job turns out to yield above $1,500.
+The tax year is almost over and a new customer asks if you can do a quick job before the end of the year. Your gut feeling is that this is a $1,100 job, but you're unsure how accurate this is. You have recorded your initial gut feelings and the actual corresponding earnings for other jobs this year (see below). The thing is, you've already earned $18,500 this year and if you earn more than $20,000 you have to pay a 10% tax on *all of* your income. I.e., there's a large *cost* or *negative utility* or *loss* of at least $2.000 if this job turns out to yield above $1,500.
 
 
 ```{r}
@@ -162,7 +162,7 @@ values = predict(fit_gut, data.frame(gut_feeling=1100), summary=FALSE)
 
 `values` is visualized in the blue histogram below. 
 
-Now you can calculate the *utility* of taking this job. Remember, when `values < 1500`, the utility of each dollar is just one dollar (`values * 1.0`). However, when `values > 1500` the utility is `values * 0.9`. In addition, there's a one-time large *negative utility* of the tax on all your previous earnings (`18500 * 0.1`). That is our *utility function* for each of the hypothetical earnings.
+Now you can calculate the *utility* of taking this job. Remember, when `values < 1500`, the utility of each dollar is just one dollar (`values * 1.0`). However, when `values > 1500` the utility is `values * 0.9`. In addition, there's a one-time large *negative utility* of the tax on all your previous earnings (`18500 * 0.1`). That is our *utility function* for each of the hypothetical earnings. (This is frequently called a *cost function* or a *loss function*)
 
 ```{r}
 utilities = ifelse(values < 1500, values, values * 0.9 - 18500 * 0.1)
