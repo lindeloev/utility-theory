@@ -339,7 +339,7 @@ value_outcome = c(success=3000, failure=-1000)  # Positive and negative
 ```
 
 
-Let's define a function which returns the utility associated with a set of predictors:
+Let's define a function which returns the utility associated with a set of predictors. Note that we can define costs on all terms in the model (here `sessions` and `success`):
 ```{r}
 predicted_utility = function(sessions, method, symptoms) {
   # Make the prediction
@@ -359,8 +359,8 @@ predicted_utility = function(sessions, method, symptoms) {
 ```
 
 
-<font color='gray'>
-(ASIDE: Many would object that we are comparing apples and oranges here: The therapy cost is monetary and the human value of a treatment success/failure is "soft". However, for utility theory to work, we need to but everything on the same scale to compare them. This is often called $utils$ and [is a big topic in and of itself](https://en.wikipedia.org/wiki/Utility#Functions) in philosophy. However, it is the foundation of much policy in practice around the world. Just look up [value of statistical life](https://en.wikipedia.org/wiki/Value_of_life). Although policy literally puts monetary values on people's lives, $utils$ should just be though of as relative utilities. Eight utils are double as much as four utils (or at least higher). Whether each util correspond to $10, $56 or the joy of eating an ice cream is arbitrary, as long as the proportions stay the same.)
+<font color='gray' size="-1">
+(ASIDE: Many would object that we are comparing apples and oranges here: The therapy cost is monetary and the human value of a treatment success/failure is "soft". However, for utility theory to work, we need to but everything on the same scale to compare them. This is often called $utils$ and [is a big topic in and of itself](https://en.wikipedia.org/wiki/Utility#Functions) in philosophy. However, it is the foundation of much policy in practice around the world. Just look up [value of statistical life](https://en.wikipedia.org/wiki/Value_of_life). Although policy literally puts monetary values on people's lives, $utils$ should just be though of as relative utilities. Eight utils are double as much as four utils (or at least higher). Whether each util correspond to $10, $56 or the joy of eating an ice cream is arbitrary, as long as the proportions stay the same.) [See more in the theory section](#theory).
 </font>
 
 
