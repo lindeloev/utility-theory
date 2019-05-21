@@ -543,7 +543,7 @@ predict(fit_ptsd, newdata=new_patient)  # Predict treatment success</code></pre>
 <p>I propose the following costs (in USD):</p>
 <pre class="r"><code>value_session = list(VR=-100, IRL=-150)  # Negative (cost)
 value_outcome = c(success=3000, failure=-1000)  # Positive and negative</code></pre>
-<p>Let’s define a function which returns the utility associated with a set of predictors. Note that we can define costs on all terms in the model (here <code>sessions</code> and <code>success</code>):</p>
+<p>Let’s define a function which returns the utility associated with a set of predictors. Note that we can apply these utilities based on all terms in the model (here <code>sessions</code> and <code>success</code>):</p>
 <pre class="r"><code>predicted_utility = function(sessions, method, symptoms) {
   # Make the prediction
   new = data.frame(sessions, method, symptoms)
@@ -563,7 +563,7 @@ value_outcome = c(success=3000, failure=-1000)  # Positive and negative</code></
 </div>
 <div id="step-3-make-a-decision" class="section level2">
 <h2><span class="header-section-number">2.3</span> Step 3: Make a decision</h2>
-Visualize the utilities associated with all treatment options (<code>method</code> and <code>sessions</code>) for two patients. One patient with 3 symptoms (solid) and one with 5 symptoms (dashed):
+Visualize the utilities associated with all treatment options (<code>method</code> and <code>sessions</code>) for two patients. Here is one patient with 3 symptoms (solid) and one with 5 symptoms (dashed):
 <div class="fold s">
 <pre class="r"><code># Make data frame with all combinations of predictors
 D_plot = crossing(
@@ -593,7 +593,7 @@ utility_curves</code></pre>
 <p><img src="index_files/figure-html/predict_ptsd-1.png" width="864" style="display: block; margin: auto;" /></p>
 </div>
 <p>For a three-symptoms patient, you would probably plan for 11 sessions of VR exposure, everything else being equal. For a five-symptom patient, you would plan for 14 sessions of VR exposure. You would definitely avoid combinations where there is a net negative utility (curve is below zero).</p>
-<p>Note that even though IRL exposure is probably more effective (see parameter estimates in <code>fit</code>), this is not outweighted by the increased cost per session! This is particularly evident after 10+ sessions where squeezing out those extra few percent chance of success is simply too expensive using IRL but still worth it for VR. The logistic model has built-in <em>satisficing</em>: no extra utility of overdoing it. As such, I think this is a nice decision support model in this case.</p>
+<p>Note that even though IRL exposure is probably more effective (see parameter estimates in <code>fit</code>), this is not outweighted by the increased cost per session! In other words, the “best” treatment is not always the one with the highest utility. Factoring in treatment costs is something politicians and other decision makers need to be way more aware of, if they want to maximize the health of the population using fixed budgets. In the current example, this discrepancy between utility and effectiveness is particularly evident after 10+ sessions where squeezing out those extra few percent chance of success is simply too expensive using IRL but still worth it for VR. The logistic model has built-in <em>satisficing</em>: there’s no extra utility of overdoing it. As such, I think this is a nice decision support model in this case.</p>
 <p>As always, you can let <code>optim</code> find the best optimum number of sessions for one of these lines. It proposes 13 sessions for a 5-symptoms patient with IRL exposure:</p>
 <pre class="r"><code>optim(12, function(x) -predicted_utility(x, method=&#39;IRL&#39;, symptoms=5))</code></pre>
 <pre><code>## $par
@@ -612,12 +612,12 @@ utility_curves</code></pre>
 ## $message
 ## NULL</code></pre>
 </div>
-<div id="possible-tweaks-and-extensions" class="section level2">
-<h2><span class="header-section-number">2.4</span> Possible tweaks and extensions</h2>
+<div id="ideas-for-tweaks-and-extensions" class="section level2">
+<h2><span class="header-section-number">2.4</span> Ideas for tweaks and extensions</h2>
 <ul>
-<li>As you collect more data, just enter it in the Excel-file and re-run the code above.</li>
-<li>You can add more <code>method</code>s (simply enter them in the <code>method</code> column in the Excel file), other predictors, and more interactions (perhaps <code>method:mo(symptoms)</code> if one treatment is better for low-symptom patients).</li>
-<li>It is probably too simplistic to model the outcome as success/failure. You can get the same “logistic” behavior by having a continuous outcome (say, a symptom severity scale) using a <code>family=gaussian</code> or <code>family=poisson</code> model, and make a <em>diminishing returns</em> utility function as well as strongly penalizing deteriorations.</li>
+<li>As you collect more data, just enter it in the Excel-file and re-run the code above. Done!</li>
+<li>You can add more <code>method</code>s (simply enter them in the <code>method</code> column in the Excel file), other predictors (e.g., socioeconomic status), and more interactions (perhaps <code>method:mo(symptoms)</code> if one treatment is better for low-symptom patients).</li>
+<li>It is probably too simplistic to model the outcome as success/failure. You can get the same “logistic” behavior if you use <code>family=gaussian</code> on a symptom severity scale (continuous) or <code>family=poisson</code> on the number of symptoms reduced. Just make a <em>diminishing returns</em> utility function as well as strongly penalizing deteriorations.</li>
 <li>Incorporate <em>opportunity cost</em> (a negative utility) into the price of a therapy session. The therapist could have spent this time on other patients and the patient could have spent this time and money for other joy-bringing activities.</li>
 </ul>
 </div>

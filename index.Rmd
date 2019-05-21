@@ -339,7 +339,7 @@ value_outcome = c(success=3000, failure=-1000)  # Positive and negative
 ```
 
 
-Let's define a function which returns the utility associated with a set of predictors. Note that we can define costs on all terms in the model (here `sessions` and `success`):
+Let's define a function which returns the utility associated with a set of predictors. Note that we can apply these utilities based on all terms in the model (here `sessions` and `success`):
 ```{r}
 predicted_utility = function(sessions, method, symptoms) {
   # Make the prediction
@@ -368,7 +368,7 @@ predicted_utility = function(sessions, method, symptoms) {
 
 ## Step 3: Make a decision
 
-Visualize the utilities associated with all treatment options (`method` and `sessions`) for two patients. One patient with 3 symptoms (solid) and one with 5 symptoms (dashed):
+Visualize the utilities associated with all treatment options (`method` and `sessions`) for two patients. Here is one patient with 3 symptoms (solid) and one with 5 symptoms (dashed):
 <div class='fold s'>
 ```{r predict_ptsd, cache=TRUE, fig.width=9, fig.height=4}
 # Make data frame with all combinations of predictors
@@ -409,7 +409,7 @@ ggsave('utility_ptsd.png', utility_curves, width=8, height=3.5)
 
 For a three-symptoms patient, you would probably plan for 11 sessions of VR exposure, everything else being equal. For a five-symptom patient, you would plan for 14 sessions of VR exposure. You would definitely avoid combinations where there is a net negative utility (curve is below zero).
 
-Note that even though IRL exposure is probably more effective (see parameter estimates in `fit`), this is not outweighted by the increased cost per session! This is particularly evident after 10+ sessions where squeezing out those extra few percent chance of success is simply too expensive using IRL but still worth it for VR. The logistic model has built-in *satisficing*: no extra utility of overdoing it. As such, I think this is a nice decision support model in this case.
+Note that even though IRL exposure is probably more effective (see parameter estimates in `fit`), this is not outweighted by the increased cost per session! In other words, the "best" treatment is not always the one with the highest utility. Factoring in treatment costs is something politicians and other decision makers need to be way more aware of, if they want to maximize the health of the population using fixed budgets. In the current example, this discrepancy between utility and effectiveness is particularly evident after 10+ sessions where squeezing out those extra few percent chance of success is simply too expensive using IRL but still worth it for VR. The logistic model has built-in *satisficing*: there's no extra utility of overdoing it. As such, I think this is a nice decision support model in this case.
 
 As always, you can let `optim` find the best optimum number of sessions for one of these lines. It proposes 13 sessions for a 5-symptoms patient with IRL exposure:
 ```{r optim_ptsd, cache=TRUE}
@@ -420,11 +420,11 @@ optim(12, function(x) -predicted_utility(x, method='IRL', symptoms=5))
 
 
 
-## Possible tweaks and extensions
+## Ideas for tweaks and extensions
 
- * As you collect more data, just enter it in the Excel-file and re-run the code above.
- * You can add more `method`s (simply enter them in the `method` column in the Excel file), other predictors, and more interactions (perhaps `method:mo(symptoms)` if one treatment is better for low-symptom patients).
- * It is probably too simplistic to model the outcome as success/failure. You can get the same "logistic" behavior by having a continuous outcome (say, a symptom severity scale) using a `family=gaussian` or `family=poisson` model, and make a *diminishing returns* utility function as well as strongly penalizing deteriorations. 
+ * As you collect more data, just enter it in the Excel-file and re-run the code above. Done!
+ * You can add more `method`s (simply enter them in the `method` column in the Excel file), other predictors (e.g., socioeconomic status), and more interactions (perhaps `method:mo(symptoms)` if one treatment is better for low-symptom patients).
+ * It is probably too simplistic to model the outcome as success/failure. You can get the same "logistic" behavior if you use `family=gaussian` on a symptom severity scale (continuous) or `family=poisson` on the number of symptoms reduced. Just make a *diminishing returns* utility function as well as strongly penalizing deteriorations. 
  * Incorporate *opportunity cost* (a negative utility) into the price of a therapy session. The therapist could have spent this time on other patients and the patient could have spent this time and money for other joy-bringing activities.
 
 
