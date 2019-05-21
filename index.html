@@ -344,7 +344,7 @@ div.tocify {
 <p>How do you use data to make optimal decisions? A popular answer is <a href="https://saylordotorg.github.io/text_risk-management-for-enterprises-and-individuals/s07-01-utility-theory.html">utility theory</a> and the aim of the present tutorial is to show that it can be dead-easy!</p>
 <p>Here’s a sneak peek at the full code for the first example we’ll go through. Three simple steps in five lines of code, and you have an optimal decision:</p>
 <pre class="r"><code># Step 1: infer predictors (regression)
-fit_gut = brm(previous_earnings ~ gut_feeling, D)
+fit_gut = brm(previous_earnings ~ gut_feeling, data)
 
 # Step 2: cost function on model-based predictions
 predicted_utility = function(gut_feeling) {
@@ -497,6 +497,7 @@ ggplot(sample_frac(D_plot, 0.1), aes(x=gut_feelings, y=utilities)) +
 <li><code>sessions:method</code>: how much each session of <code>method == 'VR'</code> increases the chance of success over and beyond <code>method == 'IRL'</code>. We know a priori that VR exposure is slightly more effective than IRL exposure (see e.g. <a href="http://www.web.teaediciones.com/Ejemplos/PSIOUS_Opris%20i%20cols%20(2012)%20VRET%20in%20anxiety%20disorders.%20A%20Quantitative%20Meta-analysis.pdf">Opris et al., 2012</a> or <a href="https://www.sciencedirect.com/science/article/pii/S0272735815000987#bb0295">this</a> or <a href="https://onlinelibrary.wiley.com/doi/abs/10.1002/da.20910">this</a>) so we put a <code>normal(1, 1)</code> prior on this term.</li>
 <li><code>mo(symptoms)</code>: More symptoms likely reduce the chance of success, everything else being equal. This effect is modeled as ordinal (monotonic, <code>mo</code>).</li>
 </ul>
+<p>If you don’t like this model, see <a href="#ex2_tweaks">ideas for tweaks and extensions</a>.</p>
 <p>To put priors on the predictors, let’s first look up their names:</p>
 <pre class="r"><code>get_prior(model_ptsd, D, family=bernoulli)</code></pre>
 <pre><code>##                 prior     class              coef group resp dpar nlpar
@@ -611,7 +612,7 @@ utility_curves</code></pre>
 ## $message
 ## NULL</code></pre>
 </div>
-<div id="ideas-for-tweaks-and-extensions" class="section level2">
+<div id="ex2_tweaks" class="section level2">
 <h2><span class="header-section-number">2.4</span> Ideas for tweaks and extensions</h2>
 <ul>
 <li>As you collect more data, just enter it in the Excel-file and re-run the code above. Done!</li>

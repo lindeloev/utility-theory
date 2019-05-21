@@ -85,7 +85,7 @@ Here's a sneak peek at the full code for the first example we'll go through. Thr
 
 ```{r, eval=FALSE}
 # Step 1: infer predictors (regression)
-fit_gut = brm(previous_earnings ~ gut_feeling, D)
+fit_gut = brm(previous_earnings ~ gut_feeling, data)
 
 # Step 2: cost function on model-based predictions
 predicted_utility = function(gut_feeling) {
@@ -290,6 +290,7 @@ I made this model to make sure that your intuition would fail you! That's when w
  * `sessions:method`: how much each session of `method == 'VR'` increases the chance of success over and beyond `method == 'IRL'`. We know a priori that VR exposure is slightly more effective than IRL exposure (see e.g. [Opris et al., 2012](http://www.web.teaediciones.com/Ejemplos/PSIOUS_Opris%20i%20cols%20(2012)%20VRET%20in%20anxiety%20disorders.%20A%20Quantitative%20Meta-analysis.pdf) or [this](https://www.sciencedirect.com/science/article/pii/S0272735815000987#bb0295) or [this](https://onlinelibrary.wiley.com/doi/abs/10.1002/da.20910)) so we put a `normal(1, 1)` prior on this term.
  * `mo(symptoms)`: More symptoms likely reduce the chance of success, everything else being equal. This effect is modeled as ordinal (monotonic, `mo`).
 
+If you don't like this model, see [ideas for tweaks and extensions](#ex2_tweaks).
 
 To put priors on the predictors, let's first look up their names:
 ```{r}
@@ -419,7 +420,7 @@ optim(12, function(x) -predicted_utility(x, method='IRL', symptoms=5))
 
 
 
-## Ideas for tweaks and extensions
+## Ideas for tweaks and extensions {#ex2_tweaks}
 
  * As you collect more data, just enter it in the Excel-file and re-run the code above. Done!
  * You can add more `method`s (simply enter them in the `method` column in the Excel file), other predictors (e.g., socioeconomic status), and more interactions (perhaps `method:mo(symptoms)` if one treatment is better for low-symptom patients).
