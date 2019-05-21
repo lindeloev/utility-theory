@@ -1,5 +1,5 @@
 ---
-title: "Utility Theory for Dummies"
+title: "Utility Theory for Dummies: An R Tutorial."
 output: 
   html_document:
     df_print: default
@@ -21,7 +21,7 @@ output:
 <script src="include/hideOutput.js"></script>
 
 By Jonas Kristoffer Lindeløv ([blog](https://lindeloev.net), [profile](https://vbn.aau.dk/da/persons/117060)).<br />
-Last updated: `r format(Sys.time(), '%d %B, %Y')` (See [changelog](https://github.com/lindeloev/utility-theory/commits/master)).
+Last updated: `r format(Sys.time(), '%d %B, %Y')` (See [source](https://github.com/lindeloev/utility-theory), [changelog](https://github.com/lindeloev/utility-theory/commits/master)).
 
 
 <!-- Social sharing. From simplesharebuttons.com -->
@@ -37,7 +37,7 @@ Last updated: `r format(Sys.time(), '%d %B, %Y')` (See [changelog](https://githu
 </style>
 
 <div id="share-buttons">
-<!-- Twitter --><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script><a href="https://twitter.com/intent/tweet?text=Utility%20Theory%20For%20Dummies%20https%3A%2F%2Flindeloev.github.io%2Futility-theory%20via%20%40jonaslindeloev" class="twitter-hashtag-button" data-size="large" data-related="jonaslindeloev" data-show-count="false">Share on Twitter</a> &nbsp;&nbsp;&nbsp;<!-- Facebook --><a href="http://www.facebook.com/sharer.php?u=https://lindeloev.github.io/utility-theory/" target="_blank"><img src="https://simplesharebuttons.com/images/somacro/facebook.png" alt="Facebook" /></a><!-- LinkedIn --><a href="http://www.linkedin.com/shareArticle?mini=true&amp;url=https://lindeloev.github.io/utility-theory/" target="_blank"><img src="https://simplesharebuttons.com/images/somacro/linkedin.png" alt="LinkedIn" /></a><!-- Digg --><a href="http://www.digg.com/submit?url=https://lindeloev.github.io/utility-theory/" target="_blank"><img src="https://simplesharebuttons.com/images/somacro/diggit.png" alt="Digg" /></a><!-- Reddit --><a href="http://reddit.com/submit?url=https://lindeloev.github.io/utility-theory/&amp;title=Utility Theory for Dummies" target="_blank"><img src="https://simplesharebuttons.com/images/somacro/reddit.png" alt="Reddit" /></a><!-- Email --><a href="mailto:?Subject=Common statistical tests are linear models (or: how to teach stats)&amp;Body=https://lindeloev.github.io/utility-theory/"><img src="https://simplesharebuttons.com/images/somacro/email.png" alt="Email" /></a>
+<!-- Twitter --><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script><a href="https://twitter.com/intent/tweet?text=Utility Theory for Dummies: An R Tutorial. https://lindeloev.github.io/utility-theory/" class="twitter-hashtag-button" data-size="large" data-related="jonaslindeloev" data-show-count="false">Share on Twitter</a> &nbsp;&nbsp;&nbsp;<!-- Facebook --><a href="http://www.facebook.com/sharer.php?u=https://lindeloev.github.io/utility-theory/" target="_blank"><img src="https://simplesharebuttons.com/images/somacro/facebook.png" alt="Facebook" /></a><!-- LinkedIn --><a href="http://www.linkedin.com/shareArticle?mini=true&amp;url=https://lindeloev.github.io/utility-theory/" target="_blank"><img src="https://simplesharebuttons.com/images/somacro/linkedin.png" alt="LinkedIn" /></a><!-- Digg --><a href="http://www.digg.com/submit?url=https://lindeloev.github.io/utility-theory/" target="_blank"><img src="https://simplesharebuttons.com/images/somacro/diggit.png" alt="Digg" /></a><!-- Reddit --><a href="http://reddit.com/submit?url=https://lindeloev.github.io/utility-theory/&amp;title=Utility Theory for Dummies: An R Tutorial." target="_blank"><img src="https://simplesharebuttons.com/images/somacro/reddit.png" alt="Reddit" /></a><!-- Email --><a href="mailto:?Subject=Utility Theory for Dummies: an R tutorial.&amp;Body=https://lindeloev.github.io/utility-theory/"><img src="https://simplesharebuttons.com/images/somacro/email.png" alt="Email" /></a>
 </div>
 
 
@@ -56,7 +56,7 @@ knitr::opts_chunk$set(
 #devtools::install_github("jumpingrivers/headR")
 headR::add_twitter_card(
   card_type = "summary_large_image",
-  title = "Utility Theory for Dummies",
+  title = "Utility Theory for Dummies: an R Tutorial.",
   user = "@jonaslindeloev",
   image = "https://lindeloev.github.io/utility-theory/utility_ptsd.png",
   file = "include/twitter_card.html"
@@ -84,17 +84,17 @@ How do you use data to make optimal decisions? A popular answer is [utility theo
 Here's a sneak peek at the full code for the first example we'll go through. Three simple steps in six lines of code, and you have an optimal decision:
 
 ```{r, eval=FALSE}
-# Step 1: infer predictors (classical regression)
+# Step 1: infer predictors (regression)
 fit_gut = brm(previous_earnings ~ gut_feeling, D)
 
-# Step 2: cost function on predictions from fit
+# Step 2: cost function on model-based predictions
 predicted_utility = function(gut_feeling) {
-  earn_pred = predict(fit_gut, data.frame(gut_feeling=gut_feeling))
+  earn_pred = predict(fit_gut, data.frame(gut_feeling))
   utils_pred = ifelse(earn_pred < 1500, yes = earn_pred, no = earn_pred*0.9)
   utils_pred
 }
 
-# Step 3: choose the gut_feeling which maximizes Expected Utility
+# Step 3: choose the predictor value which maximizes Expected Utility
 optim(1000, function(x) -mean(predicted_utility(x)))
 ```
 
@@ -109,7 +109,7 @@ The theory is quite simple: to get from classical stats to Utility Theory, just 
 
 <br />
 
-To set up the required packages, see the [Getting Started](#setup) section. If you feel like it, I've written a [very simple middle-school-level mathematical intro to these concepts](#theory). See also other excellent tutorials [here](http://www.statsathome.com/2017/10/12/bayesian-decision-theory-made-ridiculously-simple/) and [here](https://nbviewer.jupyter.org/github/CamDavidsonPilon/Probabilistic-Programming-and-Bayesian-Methods-for-Hackers/blob/master/Chapter5_LossFunctions/Ch5_LossFunctions_PyMC2.ipynb). This can be extended to *Prospect Theory* and many others decision making frameworks (see a great overview in [the vignette to the `pt` package](https://mran.microsoft.com/snapshot/2014-09-08_1746/web/packages/pt/vignettes/pt_vignette.pdf)).
+To set up the required packages, see the [Getting Started](#setup) section. If you feel like it, I've written a [very simple middle-school-level mathematical intro to these concepts](#theory). See also other excellent tutorials [here (R)](http://www.statsathome.com/2017/10/12/bayesian-decision-theory-made-ridiculously-simple/) and [here (Python)](https://nbviewer.jupyter.org/github/CamDavidsonPilon/Probabilistic-Programming-and-Bayesian-Methods-for-Hackers/blob/master/Chapter5_LossFunctions/Ch5_LossFunctions_PyMC2.ipynb). This can be extended to *Prospect Theory* and many others decision making frameworks (see a great overview in [the vignette to the `pt` package](https://mran.microsoft.com/snapshot/2014-09-08_1746/web/packages/pt/vignettes/pt_vignette.pdf)).
 
 
 Setup:
@@ -162,12 +162,14 @@ values = predict(fit_gut, data.frame(gut_feeling=1100), summary=FALSE)
 
 `values` is visualized in the blue histogram below. 
 
-Now you can calculate the *utility* of taking this job. Remember, when `values < 1500`, the utility of each dollar is just one dollar (`1.0 * values`). However, when `values > 1500` the utility is `values * 0.9`. In addition, there's a one-time large *negative utility* of the tax on all your previous earnings (`18500 * 0.1`). That is our *utility function* for each of the hypothetical earnings.
+Now you can calculate the *utility* of taking this job. Remember, when `values < 1500`, the utility of each dollar is just one dollar (`values * 1.0`). However, when `values > 1500` the utility is `values * 0.9`. In addition, there's a one-time large *negative utility* of the tax on all your previous earnings (`18500 * 0.1`). That is our *utility function* for each of the hypothetical earnings.
+
 ```{r}
 utilities = ifelse(values < 1500, values, values * 0.9 - 18500 * 0.1)
 ```
 
-We can visualize `utilities` vs. `values`. See how the above-tax-threshold earnings are shifted to the left:
+
+We can visualize `utilities` vs. `values`. See how the above-tax-threshold earnings are shifted to the left because of the one-time tax:
 
 <div class='fold s'>
 ```{r, fig.height=2.5, fig.width=8}

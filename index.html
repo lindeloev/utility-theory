@@ -11,7 +11,7 @@
 
 
 
-<title>Utility Theory for Dummies</title>
+<title>Utility Theory for Dummies: An R Tutorial.</title>
 
 <script src="index_files/jquery-1.12.4/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -35,7 +35,7 @@
 <script src="index_files/crosstalk-1.0.0/js/crosstalk.min.js"></script>
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@jonaslindeloev">
-<meta name="twitter:title" content="Utility Theory for Dummies">
+<meta name="twitter:title" content="Utility Theory for Dummies: an R Tutorial.">
 <meta name="twitter:image" content="https://lindeloev.github.io/utility-theory/utility_ptsd.png">
 <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-1026978-2"></script>
@@ -314,7 +314,7 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Utility Theory for Dummies</h1>
+<h1 class="title toc-ignore">Utility Theory for Dummies: An R Tutorial.</h1>
 
 </div>
 
@@ -323,7 +323,7 @@ div.tocify {
 <!-- From https://stackoverflow.com/a/37839683/1297830 -->
 <link rel="stylesheet" type="text/css" href="include/hideOutput.css">
 <script src="include/hideOutput.js"></script>
-<p>By Jonas Kristoffer Lindeløv (<a href="https://lindeloev.net">blog</a>, <a href="https://vbn.aau.dk/da/persons/117060">profile</a>).<br /> Last updated: 15 May, 2019 (See <a href="https://github.com/lindeloev/utility-theory/commits/master">changelog</a>).</p>
+<p>By Jonas Kristoffer Lindeløv (<a href="https://lindeloev.net">blog</a>, <a href="https://vbn.aau.dk/da/persons/117060">profile</a>).<br /> Last updated: 21 May, 2019 (See <a href="https://github.com/lindeloev/utility-theory">source</a>, <a href="https://github.com/lindeloev/utility-theory/commits/master">changelog</a>).</p>
 <!-- Social sharing. From simplesharebuttons.com -->
 <style type="text/css">
   #share-buttons img {
@@ -338,22 +338,22 @@ div.tocify {
 <div id="share-buttons">
 <!-- Twitter -->
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-<p><a href="https://twitter.com/intent/tweet?text=Utility%20Theory%20For%20Dummies%20https%3A%2F%2Flindeloev.github.io%2Futility-theory%20via%20%40jonaslindeloev" class="twitter-hashtag-button" data-size="large" data-related="jonaslindeloev" data-show-count="false">Share on Twitter</a>    <!-- Facebook --><a href="http://www.facebook.com/sharer.php?u=https://lindeloev.github.io/utility-theory/" target="_blank"><img src="https://simplesharebuttons.com/images/somacro/facebook.png" alt="Facebook" /></a><!-- LinkedIn --><a href="http://www.linkedin.com/shareArticle?mini=true&amp;url=https://lindeloev.github.io/utility-theory/" target="_blank"><img src="https://simplesharebuttons.com/images/somacro/linkedin.png" alt="LinkedIn" /></a><!-- Digg --><a href="http://www.digg.com/submit?url=https://lindeloev.github.io/utility-theory/" target="_blank"><img src="https://simplesharebuttons.com/images/somacro/diggit.png" alt="Digg" /></a><!-- Reddit --><a href="http://reddit.com/submit?url=https://lindeloev.github.io/utility-theory/&amp;title=Utility Theory for Dummies" target="_blank"><img src="https://simplesharebuttons.com/images/somacro/reddit.png" alt="Reddit" /></a><!-- Email --><a href="mailto:?Subject=Common statistical tests are linear models (or: how to teach stats)&amp;Body=https://lindeloev.github.io/utility-theory/"><img src="https://simplesharebuttons.com/images/somacro/email.png" alt="Email" /></a></p>
+<p><a href="https://twitter.com/intent/tweet?text=Utility Theory for Dummies: An R Tutorial. https://lindeloev.github.io/utility-theory/" class="twitter-hashtag-button" data-size="large" data-related="jonaslindeloev" data-show-count="false">Share on Twitter</a>    <!-- Facebook --><a href="http://www.facebook.com/sharer.php?u=https://lindeloev.github.io/utility-theory/" target="_blank"><img src="https://simplesharebuttons.com/images/somacro/facebook.png" alt="Facebook" /></a><!-- LinkedIn --><a href="http://www.linkedin.com/shareArticle?mini=true&amp;url=https://lindeloev.github.io/utility-theory/" target="_blank"><img src="https://simplesharebuttons.com/images/somacro/linkedin.png" alt="LinkedIn" /></a><!-- Digg --><a href="http://www.digg.com/submit?url=https://lindeloev.github.io/utility-theory/" target="_blank"><img src="https://simplesharebuttons.com/images/somacro/diggit.png" alt="Digg" /></a><!-- Reddit --><a href="http://reddit.com/submit?url=https://lindeloev.github.io/utility-theory/&amp;title=Utility Theory for Dummies: An R Tutorial." target="_blank"><img src="https://simplesharebuttons.com/images/somacro/reddit.png" alt="Reddit" /></a><!-- Email --><a href="mailto:?Subject=Utility Theory for Dummies: an R tutorial.&amp;Body=https://lindeloev.github.io/utility-theory/"><img src="https://simplesharebuttons.com/images/somacro/email.png" alt="Email" /></a></p>
 </div>
 <p><br /></p>
 <p>How do you use data to make optimal decisions? A popular answer is <a href="https://saylordotorg.github.io/text_risk-management-for-enterprises-and-individuals/s07-01-utility-theory.html">utility theory</a> and the aim of the present tutorial is to show that it can be dead-easy!</p>
 <p>Here’s a sneak peek at the full code for the first example we’ll go through. Three simple steps in six lines of code, and you have an optimal decision:</p>
-<pre class="r"><code># Step 1: infer predictors (classical regression)
+<pre class="r"><code># Step 1: infer predictors (regression)
 fit_gut = brm(previous_earnings ~ gut_feeling, D)
 
-# Step 2: cost function on predictions from fit
+# Step 2: cost function on model-based predictions
 predicted_utility = function(gut_feeling) {
-  earn_pred = predict(fit_gut, data.frame(gut_feeling=gut_feeling))
+  earn_pred = predict(fit_gut, data.frame(gut_feeling))
   utils_pred = ifelse(earn_pred &lt; 1500, yes = earn_pred, no = earn_pred*0.9)
   utils_pred
 }
 
-# Step 3: choose the gut_feeling which maximizes Expected Utility
+# Step 3: choose the predictor value which maximizes Expected Utility
 optim(1000, function(x) -mean(predicted_utility(x)))</code></pre>
 <p>The exact model and layout will vary from problem to problem, but the general three-step approach stays the same. It scales all the way to Generalized Linear Mixed Models (GLMM) and beyond. I start by presenting a <a href="#ex1_tax">minimal example on tax evasion</a>, followed by a slightly more extended example on choosing the <a href="#ex2_ptsd">optimal treatment plan for a particular PTSD patient</a>.</p>
 <p>The theory is quite simple: to get from classical stats to Utility Theory, just assign <em>utilities</em> to the values (<span class="math inline">\(u(x_i)\)</span>) instead of reporting them verbatim (<span class="math inline">\(x_i\)</span>). That happened in the <code>ifelse</code> line above.</p>
@@ -361,7 +361,7 @@ optim(1000, function(x) -mean(predicted_utility(x)))</code></pre>
 <img src="expected_value_utility.png" />
 </center>
 <p><br /></p>
-<p>To set up the required packages, see the <a href="#setup">Getting Started</a> section. If you feel like it, I’ve written a <a href="#theory">very simple middle-school-level mathematical intro to these concepts</a>. See also other excellent tutorials <a href="http://www.statsathome.com/2017/10/12/bayesian-decision-theory-made-ridiculously-simple/">here</a> and <a href="https://nbviewer.jupyter.org/github/CamDavidsonPilon/Probabilistic-Programming-and-Bayesian-Methods-for-Hackers/blob/master/Chapter5_LossFunctions/Ch5_LossFunctions_PyMC2.ipynb">here</a>. This can be extended to <em>Prospect Theory</em> and many others decision making frameworks (see a great overview in <a href="https://mran.microsoft.com/snapshot/2014-09-08_1746/web/packages/pt/vignettes/pt_vignette.pdf">the vignette to the <code>pt</code> package</a>).</p>
+<p>To set up the required packages, see the <a href="#setup">Getting Started</a> section. If you feel like it, I’ve written a <a href="#theory">very simple middle-school-level mathematical intro to these concepts</a>. See also other excellent tutorials <a href="http://www.statsathome.com/2017/10/12/bayesian-decision-theory-made-ridiculously-simple/">here (R)</a> and <a href="https://nbviewer.jupyter.org/github/CamDavidsonPilon/Probabilistic-Programming-and-Bayesian-Methods-for-Hackers/blob/master/Chapter5_LossFunctions/Ch5_LossFunctions_PyMC2.ipynb">here (Python)</a>. This can be extended to <em>Prospect Theory</em> and many others decision making frameworks (see a great overview in <a href="https://mran.microsoft.com/snapshot/2014-09-08_1746/web/packages/pt/vignettes/pt_vignette.pdf">the vignette to the <code>pt</code> package</a>).</p>
 Setup:
 <div class="fold s">
 <pre class="r"><code>set.seed(42)
@@ -394,9 +394,9 @@ library(openxlsx)</code></pre>
 <p>We used Bayesian <code>brms::brm</code> above because it has an associated <code>predict</code> function, which gives us the earnings and the associated probability for each hypothetical earning given <code>gut_feeling = 1000</code>. This is called the <em>posterior predictive distribution</em>. You just can’t get that from the frequentistic counterparts.</p>
 <pre class="r"><code>values = predict(fit_gut, data.frame(gut_feeling=1100), summary=FALSE)</code></pre>
 <p><code>values</code> is visualized in the blue histogram below.</p>
-<p>Now you can calculate the <em>utility</em> of taking this job. Remember, when <code>values &lt; 1500</code>, the utility of each dollar is just one dollar (<code>1.0 * values</code>). However, when <code>values &gt; 1500</code> the utility is <code>values * 0.9</code>. In addition, there’s a one-time large <em>negative utility</em> of the tax on all your previous earnings (<code>18500 * 0.1</code>). That is our <em>utility function</em> for each of the hypothetical earnings.</p>
+<p>Now you can calculate the <em>utility</em> of taking this job. Remember, when <code>values &lt; 1500</code>, the utility of each dollar is just one dollar (<code>values * 1.0</code>). However, when <code>values &gt; 1500</code> the utility is <code>values * 0.9</code>. In addition, there’s a one-time large <em>negative utility</em> of the tax on all your previous earnings (<code>18500 * 0.1</code>). That is our <em>utility function</em> for each of the hypothetical earnings.</p>
 <pre class="r"><code>utilities = ifelse(values &lt; 1500, values, values * 0.9 - 18500 * 0.1)</code></pre>
-<p>We can visualize <code>utilities</code> vs. <code>values</code>. See how the above-tax-threshold earnings are shifted to the left:</p>
+<p>We can visualize <code>utilities</code> vs. <code>values</code>. See how the above-tax-threshold earnings are shifted to the left because of the one-time tax:</p>
 <div class="fold s">
 <pre class="r"><code># Put it in a data.frame
 D_plot = data.frame(values, utilities)
