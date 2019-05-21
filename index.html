@@ -342,15 +342,14 @@ div.tocify {
 </div>
 <p><br /></p>
 <p>How do you use data to make optimal decisions? A popular answer is <a href="https://saylordotorg.github.io/text_risk-management-for-enterprises-and-individuals/s07-01-utility-theory.html">utility theory</a> and the aim of the present tutorial is to show that it can be dead-easy!</p>
-<p>Here’s a sneak peek at the full code for the first example we’ll go through. Three simple steps in six lines of code, and you have an optimal decision:</p>
+<p>Here’s a sneak peek at the full code for the first example we’ll go through. Three simple steps in five lines of code, and you have an optimal decision:</p>
 <pre class="r"><code># Step 1: infer predictors (regression)
 fit_gut = brm(previous_earnings ~ gut_feeling, D)
 
 # Step 2: cost function on model-based predictions
 predicted_utility = function(gut_feeling) {
   earn_pred = predict(fit_gut, data.frame(gut_feeling))
-  utils_pred = ifelse(earn_pred &lt; 1500, yes = earn_pred, no = earn_pred*0.9)
-  utils_pred
+  ifelse(earn_pred &lt; 1500, yes = earn_pred, no = earn_pred*0.9)
 }
 
 # Step 3: choose the predictor value which maximizes Expected Utility
